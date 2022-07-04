@@ -2,14 +2,22 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const ejs = require('ejs')
+
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const socketio = require('socket.io');
 let server, io;
 
+app.set('render engin', 'ejs')
+app.use(express.static(__dirname + '/css'));
+
 app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/index.html');
+	res.render('home.ejs');
+});
+app.get('/game', function (req, res) {
+	res.render('index.ejs');
 });
 
 const ssl = https.createServer(
@@ -29,7 +37,6 @@ io = socketio(ssl);
 io.sockets.on('connection', function (socket) {
     //add the socket id to stack of objects based on id
 	socket.on('motion', function (data) {
-        
 		let a = data;
         console.log(a);
 	});
