@@ -1,0 +1,23 @@
+{
+  "name": "js_joust_phisherman",
+  "version": "1.0.0",
+  "description": "JS Joust Game using Node for BBD Vac Week",
+  "main": "index.js",
+  "scripts": {
+    "test": "dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcgrahn/The_Phisherman.git"
+  },
+  "keywords": [
+    "js",
+    "joust"
+  ],
+  "author": "The Phisherman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bcgrahn/The_Phisherman/issues"
+  },
+  "homepage": "https://github.com/bcgrahn/The_Phisherman#readme"
+}
