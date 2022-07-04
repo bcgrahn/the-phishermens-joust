@@ -8,8 +8,36 @@ const https = require('https');
 const socketio = require('socket.io');
 let server, io;
 
-app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/index.html');
+// --- gloabal variables ---
+
+const players = [];
+
+// -------------------------
+
+// --- functions ---
+
+function get_rgb(value, threshold) {
+	if (value <= threshold / 2) {
+		let red = (2 * (255 * value)) / threshold;
+		return `rgb(${red}, 255, 0)`;
+	} else {
+		let green = 255 - 255 * ((value - threshold / 2) / threshold);
+		return `rgb(255, ${green}, 0)`;
+	}
+}
+
+// -----------------
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+app.get('/', (req, res) => {
+	res.render(__dirname + '/views/player');
+});
+
+app.get('/admin', (req, res) => {
+	res.render(__dirname + '/views/admin');
 });
 
 const ssl = https.createServer(
@@ -28,25 +56,51 @@ io = socketio(ssl);
 
 io.sockets.on('connection', function (socket) {
 	//add the socket id to stack of objects based on id
+	socket.on('player-join', (data) => {
+		let player = { username: data, id: socket.id };
+		players.push(player);
+		console.log("User '" + data + "' joined");
+		io.sockets.emit('message', player);
+	});
+
 	socket.on('motion', function (data) {
 		let a = data;
 
-		let sender_id = a.sender;
+		let username = a.sender;
 		let x = a.x;
 		let y = a.y;
 		let z = a.z;
 
 		let total = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
 
+		const index = players.findIndex((object) => {
+			return object.username === username;
+		});
+
 		if (total > 5) {
-			console.log(sender_id + ' total: ' + total);
+			// console.log(sender_id + ' total: ' + total);
+			if (players) {
+				console.log(players);
+			}
 		}
 	});
 
-	socket.on('orientation', function (data) {
-		// console.log(
-		// 	'ORIENTATION: ' + data.alpha + ' ' + data.beta + ' ' + data.gamma
-		// );
-		// console.log('ORIENTATION OBJECT: ' + JSON.stringify(data, null, 4) + '\n');
+	// socket.on('orientation', function (data) {
+	// console.log(
+	// 	'ORIENTATION: ' + data.alpha + ' ' + data.beta + ' ' + data.gamma
+	// );
+	// console.log('ORIENTATION OBJECT: ' + JSON.stringify(data, null, 4) + '\n');
+	// });
+
+	socket.on('disconnect', () => {
+		const index = players.findIndex((object) => {
+			return object.id === socket.id;
+		});
+
+		if (index >= 0) {
+			username = players[index].username;
+			players.splice(index, 1);
+			console.log(username + ' disconnected');
+		}
 	});
 });

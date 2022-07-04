@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Phone Motion Streamer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="minimal-ui,width=device-width, user-scalable=no">
+    <link rel="stylesheet" href="/css/player.css">
+  </head>
+  <body>
+    <h1>Phone Motion Streamer</h1>
+    <h1 id="orientation"></h1>
+    <form id="enter">
+      <input type="text" id="sending-id" placeholder="Enter an ID for this measurement" autocorrect="off" autocapitalize="off">
+      <input type="submit" value="Start Streaming">
+    </form>
+    <div id="status"></div>
+  </body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/player.js"></script>
+</html>
