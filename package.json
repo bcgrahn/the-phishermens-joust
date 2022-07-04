@@ -4,8 +4,9 @@
   "description": "JS Joust Game using Node for BBD Vac Week",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon app.js",
-    "dev": "nodemon app.js"
+    "test": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
