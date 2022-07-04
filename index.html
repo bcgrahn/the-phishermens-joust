@@ -57,7 +57,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function(){
-      var socket = io.connect('http://<<IP>>');
+      var socket = io();
       var streaming = false;
       var status = document.getElementById('status');
       var sendingId = document.getElementById('sending-id');
@@ -74,13 +74,13 @@
       };
       form.addEventListener("submit",startStreaming);
 
-
       if (window.DeviceMotionEvent !== undefined) {
         window.ondevicemotion = function(e) {
+            console.log(e);
           if (!streaming) return false;
           socket.emit('motion', {
             'sender':sendingId.value,
-            'acceleration':e.accelerationIncludingGravity,
+            'acceleration':e.acceleration,
             'interval':e.interval,
             'rotationRate':e.rotationRate
           });
