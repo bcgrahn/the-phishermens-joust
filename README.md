@@ -1,2 +1,2 @@
 # The_Phisherman
-BBD project: Greg, Jared, Gabriel 
+BBD project: Greg, Bryce, Jared, Gabriel, Adam
