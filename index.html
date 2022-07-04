@@ -80,7 +80,7 @@
           if (!streaming) return false;
           socket.emit('motion', {
             'sender':sendingId.value,
-            'acceleration':e.acceleration,
+            'acceleration':e.accelerationIncludingGravity,
             'interval':e.interval,
             'rotationRate':e.rotationRate
           });
