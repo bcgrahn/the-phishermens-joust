@@ -49,6 +49,7 @@
 
   <body>
     <h1>Phone Motion Streamer</h1>
+    <h1 id="orientation"></h1>
     <form id="enter">
       <input type="text" id="sending-id" placeholder="Enter an ID for this measurement" autocorrect="off" autocapitalize="off">
       <input type="submit" value="Start Streaming">
@@ -56,48 +57,50 @@
     <div id="status"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-    document.addEventListener('DOMContentLoaded', function(){
-      var socket = io();
-      var streaming = false;
-      var status = document.getElementById('status');
-      var sendingId = document.getElementById('sending-id');
-      var form = document.getElementById('enter');
+    document.addEventListener('DOMContentLoaded', function () {
+        var socket = io();
+        var streaming = false;
+        var status = document.getElementById('status');
+        var sendingId = document.getElementById('sending-id');
+        var form = document.getElementById('enter');
+        var orientation = document.getElementById('orientation');
 
-      var startStreaming = function (e) {
-        e.preventDefault();
-        streaming = true;
-        form.style.display='none';
-        status.className='csspinner line back-and-forth no-overlay';
-        status.style.display='block';
-        document.activeElement.blur();
-        return false;
-      };
-      form.addEventListener("submit",startStreaming);
+        var startStreaming = function (e) {
+            e.preventDefault();
+            streaming = true;
+            form.style.display = 'none';
+            status.className = 'csspinner line back-and-forth no-overlay';
+            status.style.display = 'block';
+            document.activeElement.blur();
+            return false;
+        };
+        form.addEventListener("submit", startStreaming);
 
-      if (window.DeviceMotionEvent !== undefined) {
-        window.ondevicemotion = function(e) {
-            console.log(e);
-          if (!streaming) return false;
-          socket.emit('motion', {
-            'sender':sendingId.value,
-            'acceleration':e.accelerationIncludingGravity,
-            'interval':e.interval,
-            'rotationRate':e.rotationRate
-          });
-        };
-        window.ondeviceorientation = function(e) {
-          if (!streaming) return false;
-          socket.emit('orientation', {
-            'sender':sendingId.value,
-            'alpha': e.alpha,
-            'beta': e.beta,
-            'gamma': e.gamma
-          });
-        };
-      } else {
-        status.style.display = 'block';
-        status.innerHTML = 'Unfortunately, this device does not have the right sensors.';
-      }
+        if (window.DeviceMotionEvent !== undefined) {
+            window.ondevicemotion = function (e) {
+                console.log(e);
+                if (!streaming) return false;
+                socket.emit('motion', {
+                    'sender': sendingId.value,
+                    'acceleration': e.accelerationIncludingGravity,
+                    'interval': e.interval,
+                    'rotationRate': e.rotationRate
+                })
+            }
+            window.ondeviceorientation = function (e) {
+                if (!streaming) return false;
+                socket.emit('orientation', {
+                    'sender': sendingId.value,
+                    'alpha': e.alpha,
+                    'beta': e.beta,
+                    'gamma': e.gamma
+                })
+                orientation.innerText = "A: " + e.alpha.toFixed(2) + "\nB: " + e.beta.toFixed(2) + "\nG: " + e.gamma.toFixed(2); 
+            }
+        } else {
+            status.style.display = 'block';
+            status.innerHTML = 'Unfortunately, this device does not have the right sensors.';
+        }
     });
     </script>
   </body>
