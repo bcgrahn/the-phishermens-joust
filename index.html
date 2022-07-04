@@ -55,7 +55,10 @@
       <input type="submit" value="Start Streaming">
     </form>
     <div id="status"></div>
+    <button id="play-button">Play/Pause</button>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://unpkg.com/tone"></script>
+    <script type="text/javascript" src="music.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         var socket = io();
