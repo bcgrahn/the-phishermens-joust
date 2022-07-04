@@ -27,11 +27,20 @@ ssl.listen(process.env.PORT, () => {
 io = socketio(ssl);
 
 io.sockets.on('connection', function (socket) {
-    //add the socket id to stack of objects based on id
+	//add the socket id to stack of objects based on id
 	socket.on('motion', function (data) {
-        
 		let a = data;
-        console.log(a);
+
+		let sender_id = a.sender;
+		let x = a.x;
+		let y = a.y;
+		let z = a.z;
+
+		let total = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+
+		if (total > 5) {
+			console.log(sender_id + ' total: ' + total);
+		}
 	});
 
 	socket.on('orientation', function (data) {
