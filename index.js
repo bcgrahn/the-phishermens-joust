@@ -2,16 +2,15 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const http = require('http');
+const fs = require('fs');
+const path = require('path')
+const https = require('https');
 const socketio = require('socket.io');
 let server, io;
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
-
-server = http.Server(app);
-server.listen(5000);
 
 io = socketio(server);
 
@@ -29,3 +28,10 @@ io.sockets.on('connection', function (socket) {
     });
   
 });
+
+const ssl = https.createServer({
+    key:fs.readFileSync(path.join(__dirname,'./certs/key.pem'),'utf-8'),
+    cert:fs.readFileSync(path.join(__dirname,'./certs/cert.pem'),'utf-8') 
+},app)
+
+ssl.listen(process.env.PORT, ()=>{console.log(`Server is active on port: ${process.env.PORT}`)});
