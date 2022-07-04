@@ -2,14 +2,22 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const ejs = require('ejs')
+
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const socketio = require('socket.io');
 let server, io;
 
+app.set('render engin', 'ejs')
+app.use(express.static(__dirname + '/css'));
+
 app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/index.html');
+	res.render('home.ejs');
+});
+app.get('/game', function (req, res) {
+	res.render('index.ejs');
 });
 
 const ssl = https.createServer(

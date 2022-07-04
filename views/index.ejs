@@ -78,7 +78,6 @@
 
         if (window.DeviceMotionEvent !== undefined) {
             window.ondevicemotion = function (e) {
-                
                 if (!streaming) return false;
                 socket.emit('motion', {
                     'sender': sendingId.value,
