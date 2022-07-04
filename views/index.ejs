@@ -5,7 +5,7 @@
       body {
         font-family: "Helvetica Neue", Helvetica;
         padding:2em;
-        background: radial-gradient(white, rgb(200,200,234));
+        background: orange;
       }
       h1 {
         font-weight:300;
@@ -47,7 +47,7 @@
     <meta name="viewport" content="minimal-ui,width=device-width, user-scalable=no">
   </head>
 
-  <body>
+  <body> 
     <h1>Phone Motion Streamer</h1>
     <h1 id="orientation"></h1>
     <form id="enter">
@@ -71,6 +71,7 @@
             form.style.display = 'none';
             status.className = 'csspinner line back-and-forth no-overlay';
             status.style.display = 'block';
+            // document.body.style.backgroundColor = 'red';
             document.activeElement.blur();
             return false;
         };
@@ -79,14 +80,19 @@
         if (window.DeviceMotionEvent !== undefined) {
             window.ondevicemotion = function (e) {
                 if (!streaming) return false;
-                socket.emit('motion', {
+                let data = {
                     'sender': sendingId.value,
                     'x': e.acceleration.x,
                     'y': e.acceleration.y,
                     'z': e.acceleration.z,
                     'interval': e.interval,
                     'rotationRate': e.rotationRate
-                })
+                }
+                
+                let total = Math.sqrt(Math.pow(data.x, 2) + Math.pow(data.y, 2) + Math.pow(data.z, 2));
+                rgb = ((total-0)/(255-0))*100
+                document.body.style.backgroundColor = `rgb(0,${255-(rgb*20)},0)`
+                socket.emit('motion', data)
             }
             window.ondeviceorientation = function (e) {
                 if (!streaming) return false;

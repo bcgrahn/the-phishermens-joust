@@ -13,11 +13,12 @@ let server, io;
 app.set('render engin', 'ejs')
 app.use(express.static(__dirname + '/css'));
 
+bg_col = 'red';
 app.get('/', function (req, res) {
 	res.render('home.ejs');
 });
 app.get('/game', function (req, res) {
-	res.render('index.ejs');
+	res.render('index.ejs', {bg_col});
 });
 
 const ssl = https.createServer(
@@ -37,6 +38,7 @@ io = socketio(ssl);
 io.sockets.on('connection', function (socket) {
 	//add the socket id to stack of objects based on id
 	socket.on('motion', function (data) {
+		bg_col='rgb(0,255,0)'
 		let a = data;
 
 		let sender_id = a.sender;
@@ -45,10 +47,14 @@ io.sockets.on('connection', function (socket) {
 		let z = a.z;
 
 		let total = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
-
-		if (total > 5) {
-			console.log(sender_id + ' total: ' + total);
-		}
+		//normalise code to use in rgb values
+		 
+		//normalise function
+		rgb = ((total-0)/(255-0))*100
+		console.log("RGB val: " + rgb)
+		// if (total > 5) {
+		// 	console.log(sender_id + ' total: ' + total);
+		// }
 	});
 
 	socket.on('orientation', function (data) {
