@@ -78,11 +78,13 @@
 
         if (window.DeviceMotionEvent !== undefined) {
             window.ondevicemotion = function (e) {
-                console.log(e);
+                
                 if (!streaming) return false;
                 socket.emit('motion', {
                     'sender': sendingId.value,
-                    'acceleration': e.accelerationIncludingGravity,
+                    'x': e.acceleration.x,
+                    'y': e.acceleration.y,
+                    'z': e.acceleration.z,
                     'interval': e.interval,
                     'rotationRate': e.rotationRate
                 })
@@ -95,7 +97,7 @@
                     'beta': e.beta,
                     'gamma': e.gamma
                 })
-                orientation.innerText = "A: " + e.alpha.toFixed(2) + "\nB: " + e.beta.toFixed(2) + "\nG: " + e.gamma.toFixed(2); 
+                // orientation.innerText = "A: " + e.alpha.toFixed(2) + "\nB: " + e.beta.toFixed(2) + "\nG: " + e.gamma.toFixed(2); 
             }
         } else {
             status.style.display = 'block';

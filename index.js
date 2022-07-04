@@ -27,16 +27,17 @@ ssl.listen(process.env.PORT, () => {
 io = socketio(ssl);
 
 io.sockets.on('connection', function (socket) {
+    //add the socket id to stack of objects based on id
 	socket.on('motion', function (data) {
-		let a = data.acceleration;
-		console.log('MOTION: ' + a.x + ' ' + a.y + ' ' + a.z);
-		// console.log('MOTION OBJECT: ' + JSON.stringify(data, null, 4) + '\n');
+        
+		let a = data;
+        console.log(a);
 	});
 
 	socket.on('orientation', function (data) {
-		console.log(
-			'ORIENTATION: ' + data.alpha + ' ' + data.beta + ' ' + data.gamma
-		);
+		// console.log(
+		// 	'ORIENTATION: ' + data.alpha + ' ' + data.beta + ' ' + data.gamma
+		// );
 		// console.log('ORIENTATION OBJECT: ' + JSON.stringify(data, null, 4) + '\n');
 	});
 });
