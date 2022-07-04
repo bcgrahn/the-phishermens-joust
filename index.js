@@ -12,7 +12,14 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-io = socketio(server);
+const ssl = https.createServer({
+    key:fs.readFileSync(path.join(__dirname,'./certs/key.pem'),'utf-8'),
+    cert:fs.readFileSync(path.join(__dirname,'./certs/cert.pem'),'utf-8') 
+},app)
+
+ssl.listen(process.env.PORT, ()=>{console.log(`Server is active on port: ${process.env.PORT}`)});
+
+io = socketio(ssl);
 
 io.sockets.on('connection', function (socket) {
 
@@ -29,9 +36,3 @@ io.sockets.on('connection', function (socket) {
   
 });
 
-const ssl = https.createServer({
-    key:fs.readFileSync(path.join(__dirname,'./certs/key.pem'),'utf-8'),
-    cert:fs.readFileSync(path.join(__dirname,'./certs/cert.pem'),'utf-8') 
-},app)
-
-ssl.listen(process.env.PORT, ()=>{console.log(`Server is active on port: ${process.env.PORT}`)});
