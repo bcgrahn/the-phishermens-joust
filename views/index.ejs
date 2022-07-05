@@ -90,8 +90,8 @@
                 }
                 
                 let total = Math.sqrt(Math.pow(data.x, 2) + Math.pow(data.y, 2) + Math.pow(data.z, 2));
-                rgb = ((total-0)/(255-0))*100
-                document.body.style.backgroundColor = `rgb(0,${255-(rgb*20)},0)`
+                rgb = ((Math.abs(total)-0)/(255-0))*100
+                document.body.style.backgroundColor = `rgb(0,${255-(rgb)},0)`
                 socket.emit('motion', data)
             }
             window.ondeviceorientation = function (e) {

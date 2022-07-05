@@ -13,12 +13,40 @@ let server, io;
 app.set('render engin', 'ejs')
 app.use(express.static(__dirname + '/css'));
 
-bg_col = 'red';
 app.get('/', function (req, res) {
 	res.render('home.ejs');
 });
+
 app.get('/game', function (req, res) {
-	res.render('index.ejs', {bg_col});
+	res.render('index.ejs');
+});
+
+
+//temporary dummy data for viewings
+let dummy = [
+	{
+		_id:'1',
+		_name:'Harold',
+		_rank:undefined,
+	},
+	{
+		_id:'2',
+		_name:'J0hnee',
+		_rank:undefined,
+	},
+	{
+		_id:'3',
+		_name:'Michael',
+		_rank:undefined,
+	},
+	{
+		_id:'1',
+		_name:'Harold',
+		_rank:undefined,
+	},
+]
+app.get('/spectate', function (req, res) {
+	res.render('spectator.ejs' ,{dummy});
 });
 
 const ssl = https.createServer(
@@ -38,7 +66,7 @@ io = socketio(ssl);
 io.sockets.on('connection', function (socket) {
 	//add the socket id to stack of objects based on id
 	socket.on('motion', function (data) {
-		bg_col='rgb(0,255,0)'
+		bg_col='rgb(0,255,0)' 
 		let a = data;
 
 		let sender_id = a.sender;
@@ -51,7 +79,7 @@ io.sockets.on('connection', function (socket) {
 		 
 		//normalise function
 		rgb = ((total-0)/(255-0))*100
-		console.log("RGB val: " + rgb)
+		console.log("RGB val: " + (rgb*20))
 		// if (total > 5) {
 		// 	console.log(sender_id + ' total: ' + total);
 		// }
