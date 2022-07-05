@@ -1,300 +1,120 @@
-const AMinorScale = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-const addOctaveNumbers = (scale, octaveNumber) => scale.map(note => {
-  const firstOctaveNoteIndex = scale.indexOf('C') !== -1 ? scale.indexOf('C') : scale.indexOf('C#')
-  const noteOctaveNumber = scale.indexOf(note) < firstOctaveNoteIndex ? octaveNumber - 1 : octaveNumber;
-  return `${note}${noteOctaveNumber}`
-});
 
-const constructMajorChord = (scale, octave, rootNote) => {
-  const scaleWithOctave = addOctaveNumbers(scale, octave);
+let bpm_offset = 0;
+const bpmelem = document.getElementById("bpm");
+bpmelem.innerText = bpm_offset;
 
-  const getNextChordNote = (note, nextNoteNumber) => {
-    const nextNoteInScaleIndex = scaleWithOctave.indexOf(note) + nextNoteNumber - 1;
-    let nextNote;
-    if (typeof(scaleWithOctave[nextNoteInScaleIndex]) !== 'undefined') {
-      nextNote = scaleWithOctave[nextNoteInScaleIndex];
-    } else {
-      nextNote = scaleWithOctave[nextNoteInScaleIndex - 7];
-      const updatedOctave = parseInt(nextNote.slice(1)) + 1;
-      nextNote = `${nextNote.slice(0,1)}${updatedOctave}`;
-    }
+let slowCount = 0;
+let fastCount = 0;
+let init_bpm; 
 
-    return nextNote;
+function parseMidi(midi){
+  if (midi.header) {
+      const midiJSON = JSON.stringify(midi, undefined, null)
+      const parsedMidiObject = JSON.parse(midiJSON)
+      console.log(parsedMidiObject);
+      return parsedMidiObject
   }
-
-  const thirdNote = getNextChordNote(rootNote, 3)
-  const fifthNote = getNextChordNote(rootNote, 5)
-  const chord = [rootNote, thirdNote, fifthNote] 
-
-  return chord
 }
 
-const constructChords = (scale, octave) => {
-  const scaleWithOctave = addOctaveNumbers(scale, octave);
+function makeSong(midi){
+  Tone.Transport.PPQ = midi.header.ppq
+  const numofVoices = midi.tracks.length 
+  const synths = [] 
 
-  const getNextChordNote = (note, nextNoteNumber) => {
-    const nextNoteInScaleIndex = scaleWithOctave.indexOf(note) + nextNoteNumber - 1;
-    let nextNote;
-    if (typeof(scaleWithOctave[nextNoteInScaleIndex]) !== 'undefined') {
-      nextNote = scaleWithOctave[nextNoteInScaleIndex];
-    } else {
-      nextNote = scaleWithOctave[nextNoteInScaleIndex - 6];
-      const updatedOctave = parseInt(nextNote.slice(1)) + 1;
-      nextNote = `${nextNote.slice(0,1)}${updatedOctave}`;
-    }
-
-    return nextNote;
+  //************** Tell Transport about Time Signature changes  ********************
+  for (let i=0; i < midi.header.timeSignatures.length; i++) {
+      Tone.Transport.schedule(function(time){
+          Tone.Transport.timeSignature = midi.header.timeSignatures[i].timeSignature;
+      }, midi.header.timeSignatures[i].ticks + "i");    
   }
 
+  //************** Tell Transport about bpm changes  ********************
+  for (let i=0; i < midi.header.tempos.length; i++) {
+      Tone.Transport.schedule(function(time){
+          Tone.Transport.bpm.value = midi.header.tempos[i].bpm + bpm_offset;
+      }, midi.header.tempos[i].ticks + "i");    
+  }
 
-  const chordArray = scaleWithOctave.map(note => {
-    let thirdNote = getNextChordNote(note, 3)
-    let fifthNote = getNextChordNote(note, 5)
-   
-    const chord = [note, thirdNote, fifthNote] 
+  //************ Change time from seconds to ticks in each part  *************
+  for (let i = 0; i < numofVoices; i++) {
+      midi.tracks[i].notes.forEach(note => {
+          note.time = note.ticks + "i"
+      })
+  }
+  
+  //************** Create Synths and Parts, one for each track  ********************
+  for (let i = 0; i < numofVoices; i++) {
+      synths[i] = new Tone.PolySynth(Tone.Synth).toDestination();
+      const now = Tone.now();
 
-    return chord
-  })
+      let part = new Tone.Part(function(time,value){
+          synths[i].triggerAttackRelease(value.name, value.duration, time, value.velocity)
+      },midi.tracks[i].notes).start()                  
+  }  
 
-  return chordArray;
+  Tone.Transport.scheduleRepeat(function(time){
+    let rand_offset = random_bpm_offset();
+    if (bpm_offset < 15) {
+      fastCount = 0;
+      slowCount++;
+      if (slowCount > 2) {
+        rand_offset = 50 - bpm_offset;
+        console.log("JUMP UP");
+      }
+    } else if (bpm_offset > 30) {
+      slowCount = 0;
+      fastCount++;
+      if (fastCount > 4) {
+        rand_offset = -10 - bpm_offset;
+        console.log("JUMP DOWN");
+      }
+    }
+    if (bpm_offset + rand_offset > -25 && bpm_offset + rand_offset < 85) {
+      bpm_offset += rand_offset;
+      Tone.Transport.bpm.value += rand_offset;
+      // if (Math.abs(bpm_offset - 20) >= 40) {
+      //   song_counter = Math.min(song_counter + 1, songs.length - 1);
+      //   bpm_offset = -5;
+      //   updateSong();
+      // }
+    }
+    bpmelem.innerText = bpm_offset;
+  }, "9");
 }
 
-Tone.Transport.bpm.value = 150
+function updateSong() {
+  if (Tone.Transport.state === "started") {
+    Tone.Transport.stop();
+  }
+  Tone.Transport.cancel();
+    
+  fetch("./midi_songs/hing-yan-au_os.json").then(response => {
+    return response.json();
+  }).then(data => {
+    // Work with JSON data here
+    
+    makeSong(data);
+    
+  }).catch(err => {
+    // Do something for an error here
+    console.error(err);
+  });
 
-const IChord = constructMajorChord(AMinorScale, 4, 'A3');
-const VChord = constructMajorChord(AMinorScale, 4, 'E4');
-const VIChord = constructMajorChord(AMinorScale, 3, 'F3');
-const IVChord = constructMajorChord(AMinorScale, 3, 'D3');
-
-IChord.push('A2', 'G4')
-VChord.push('E2', 'G3')
-VIChord.push('F2', 'E4')
-IVChord.push('D2', 'C4')
-
-console.log(IChord);
-console.log(VChord);
-console.log(VIChord);
-console.log(IVChord);
-
-
-const synth = new Tone.PolySynth(Tone.Synth, {
-  volume: -5,
-  oscillator : {
-		type : "sawtooth"
-	}
-}).toDestination();
-
-const mainChords = [
-  {'time': 0, 'note': IChord, 'duration': '2n.'},
-  {'time': '0:3', 'note': VChord, 'duration': '4n'},
-  {'time': '1:0', 'note': VIChord, 'duration': '2n.'},
-  {'time': '1:3', 'note': VChord, 'duration': '4n'},
-  {'time': '2:0', 'note': IVChord, 'duration': '2n.'},
-  {'time': '2:3', 'note': VChord, 'duration': '4n'},
-  {'time': '3:0', 'note': VIChord, 'duration': '2n'},
-  {'time': '3:2', 'note': VChord, 'duration': '4n'},
-  {'time': '3:3', 'note': IVChord, 'duration': '4n'},
-  {'time': '4:0', 'note': IChord, 'duration': '2n.'},
-  {'time': '4:3', 'note': VChord, 'duration': '4n'},
-  {'time': '5:0', 'note': VIChord, 'duration': '2n.'},
-  {'time': '5:3', 'note': VChord, 'duration': '4n'},
-  {'time': '6:0', 'note': IVChord, 'duration': '2n.'},
-  {'time': '6:3', 'note': VChord, 'duration': '4n'},
-  {'time': '7:0', 'note': VIChord, 'duration': '2n'},
-  {'time': '7:2', 'note': VChord, 'duration': '4n'},
-  {'time': '7:3', 'note': IVChord, 'duration': '4n'},
-];
-
-const part = new Tone.Part(function(time, note){
-  synth.triggerAttackRelease(note.note, note.duration, time);
-}, mainChords).start(0);
-
-const IChord1 = constructMajorChord(AMinorScale, 5, 'A4');
-const VChord1 = constructMajorChord(AMinorScale, 5, 'E5');
-const VIChord1= constructMajorChord(AMinorScale, 4, 'F4');
-const IVChord1 = constructMajorChord(AMinorScale, 4, 'D4');
-
-IChord.push('A3', 'G5')
-VChord.push('E3', 'D5')
-VIChord.push('F3', 'E5')
-IVChord.push('D3', 'C5')
-
-
-const mainChordPart = new Tone.PolySynth(Tone.Synth, {
-  oscillator : {
-    count: 6,
-    spread: 80,
-		type : "fatsawtooth"
-	}
-}).toDestination();
-
-const highOctaveChords = [
-  {'time': 0, 'note': IChord1, 'duration': '2n.'},
-  {'time': '0:3', 'note': VChord1, 'duration': '4n'},
-  {'time': '1:0', 'note': VIChord1, 'duration': '2n.'},
-  {'time': '1:3', 'note': VChord1, 'duration': '4n'},
-  {'time': '2:0', 'note': IVChord1, 'duration': '2n.'},
-  {'time': '2:3', 'note': VChord1, 'duration': '4n'},
-  {'time': '3:0', 'note': VIChord1, 'duration': '2n'},
-  {'time': '3:2', 'note': VChord1, 'duration': '4n'},
-  {'time': '3:3', 'note': IVChord1, 'duration': '4n'},
-  {'time': '4:0', 'note': IChord1, 'duration': '2n.'},
-  {'time': '4:3', 'note': VChord1, 'duration': '4n'},
-  {'time': '5:0', 'note': VIChord1, 'duration': '2n.'},
-  {'time': '5:3', 'note': VChord1, 'duration': '4n'},
-  {'time': '6:0', 'note': IVChord1, 'duration': '2n.'},
-  {'time': '6:3', 'note': VChord1, 'duration': '4n'},
-  {'time': '7:0', 'note': VIChord1, 'duration': '2n'},
-  {'time': '7:2', 'note': VChord1, 'duration': '4n'},
-  {'time': '7:3', 'note': IVChord1, 'duration': '4n'},
-];
-
-const highSynth  = new Tone.PolySynth(Tone.Synth, {
-  volume: -16,
-  count: 6,
-  spread: 80,
-  oscillator : {
-		type : "fatsawtooth"
-	}
-}).toDestination();
-
-const highOctaveChordPart = new Tone.Part(function(time, note){
-  highSynth.triggerAttackRelease(note.note, note.duration, time, 0.5);
-}, highOctaveChords).start(0);
-
-
-const mainMelody = [
-  {'time': 0, 'note': 'G4', 'duration': '8n'},
-  {'time': '0:0:2', 'note': 'F4', 'duration': '8n'},
-  {'time': '0:1', 'note': 'D4', 'duration': '8n.'},
-  {'time': '0:2', 'note': 'D4', 'duration': '8n'},
-  {'time': '0:2:2', 'note': 'F4', 'duration': '8n.'},
-  {'time': '0:3', 'note': 'G4', 'duration': '8n'},
-  {'time': '0:3:2', 'note': 'A4', 'duration': '2n'},
-  {'time': '2:0', 'note': 'A4', 'duration': '8n'},
-  {'time': '2:0:2', 'note': 'G4', 'duration': '8n'},
-  {'time': '2:1', 'note': 'F4', 'duration': '8n'},
-  {'time': '2:2', 'note': 'A4', 'duration': '8n'},
-  {'time': '2:2:2', 'note': 'G4', 'duration': '8n'},
-  {'time': '2:3', 'note': 'E4', 'duration': '8n'},
-  {'time': '2:3:2', 'note': 'F4', 'duration': '2n'},
-  {'time': '4:0', 'note': 'G4', 'duration': '8n'},
-  {'time': '4:0:2', 'note': 'F4', 'duration': '8n'},
-  {'time': '4:1', 'note': 'D4', 'duration': '8n'},
-  {'time': '4:2', 'note': 'F4', 'duration': '8n'},
-  {'time': '4:2:2', 'note': 'A4', 'duration': '8n'},
-  {'time': '4:3', 'note': 'G4', 'duration': '8n'},
-  {'time': '4:3:2', 'note': 'A4', 'duration': '2n'},
-  {'time': '5:2:2', 'note': 'G4', 'duration': '8n'},
-  {'time': '5:3', 'note': 'A4', 'duration': '8n'},
-  {'time': '5:3:2', 'note': 'B4', 'duration': '8n'},
-  {'time': '6:0', 'note': 'C5', 'duration': '8n'},
-  {'time': '6:1', 'note': 'B4', 'duration': '8n'},
-  {'time': '6:1:2', 'note': 'A4', 'duration': '8n'},
-  {'time': '6:2', 'note': 'B4', 'duration': '8n'},
-  {'time': '6:2:2', 'note': 'A4', 'duration': '8n'},
-  {'time': '6:3', 'note': 'G4', 'duration': '8n'},
-  {'time': '6:3:2', 'note': 'A4', 'duration': '1n'},
-];
-
-
-const synth2 = new Tone.Synth({
-  oscillator : {
-    volume: 5,
-    count: 3,
-    spread: 40,
-		type : "fatsawtooth"
-	}
-}).toDestination();
-
-const mainMelodyPart = new Tone.Part(function(time, note){
-  synth2.triggerAttackRelease(note.note, note.duration, time);
-}, mainMelody).start(0);
-
-
-const lowPass = new Tone.Filter({
-  frequency: 8000,
-}).toDestination();
-
-const snareDrum = new Tone.NoiseSynth({
-  noise: {
-    type: 'white',
-    playbackRate: 3,
-  },
-  envelope: {
-    attack: 0.001,
-    decay: 0.20,
-    sustain: 0.15,
-    release: 0.03,
-  },
-}).connect(lowPass);
-
-const snares = [
-  { time: '0:2' },
-  { time: '1:2' },
-  { time: '2:2' },
-  { time: '3:2' },
-  { time: '4:2' },
-  { time: '5:2' },
-  { time: '6:2' },
-  { time: '7:2' },
-]
-
-const snarePart = new Tone.Part(function(time){
-  snareDrum.triggerAttackRelease('4n', time)
-}, snares).start(0);
-
-
-const kickDrum = new Tone.MembraneSynth({
-  volume: 6
-}).toDestination();
-
-const kicks = [
-  { time: '0:0' },
-  { time: '0:3:2' },
-  { time: '1:1' },
-  { time: '2:0' },
-  { time: '2:1:2' },
-  { time: '2:3:2' },
-  { time: '3:0:2' },
-  { time: '3:1:' },
-  { time: '4:0' },
-  { time: '4:3:2' },
-  { time: '5:1' },
-  { time: '6:0' },
-  { time: '6:1:2' },
-  { time: '6:3:2' },
-  { time: '7:0:2' },
-  { time: '7:1:' },
-];
-
-const kickPart = new Tone.Part(function(time){
-  kickDrum.triggerAttackRelease('C1', '8n', time)
-}, kicks).start(0);
-
-
-const bassline = [
-  {'time': 0, 'note': 'A0', 'duration': '2n'},
-  {'time': '0:3', 'note': 'F0', 'duration': '2n.'},
-  {'time': '1:3', 'note': 'D0', 'duration': '2n.'},
-  {'time': '2:3', 'note': 'F0', 'duration': '1:1'},
-];
-
-const bass = new Tone.Synth({
-  oscillator : {
-		type : "triangle"
-	}
-}).toDestination();
-
-const bassPart = new Tone.Part(function(time, note){
-  bass.triggerAttackRelease(note.note, note.duration, time);
-}, bassline).start(0);
+  Tone.Transport.start();
+}
 
 
 document.getElementById("play-button").addEventListener("click", function() {
   if (Tone.Transport.state !== 'started') {
-    Tone.Transport.start();
+    updateSong();
+    Tone.context._context.resume();
   } else {
-    Tone.Transport.stop();
+    Tone.Transport.stop()
   }
 });
+
+function random_bpm_offset() {
+  let neg = (Math.random() > 0.5 ? 1 : -1);
+  let rand = (Math.round(Math.random() * 20) + 15);
+  return rand * neg
+}
