@@ -19,8 +19,6 @@ const minimum_percentage = 0.5;
 const maximum_percentage = 2;
 const percentage_scale = maximum_percentage - minimum_percentage;
 
-
-
 let socket = io();
 let sendingId = document.getElementById('sending-id');
 
@@ -95,17 +93,18 @@ function makeSong(midi){
     if (bpm_offset + rand_offset > minimum_offset && bpm_offset + rand_offset < maximum_offset) {
       bpm_offset += rand_offset;
       Tone.Transport.bpm.value += rand_offset;
-      socket.emit('bpm-change', {
-				sender: sendingId.value,
-				bpm: bpm_offset
-			});
       // if (Math.abs(bpm_offset - 20) >= 40) {
-      //   song_counter = Math.min(song_counter + 1, songs.length - 1);
-      //   bpm_offset = -5;
-      //   updateSong();
-      // }
-    }
-    bpmelem.innerText = bpm_offset;
+        //   song_counter = Math.min(song_counter + 1, songs.length - 1);
+        //   bpm_offset = -5;
+        //   updateSong();
+        // }
+      }
+      let threshold_percentage = convert_offset_to_percentage();
+      bpmelem.innerText = bpm_offset;
+      socket.emit('bpm-change', {
+        bpm_offset: bpm_offset,
+        threshold_percentage: threshold_percentage
+      });
   }, "9");
 }
 
