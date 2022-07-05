@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/css/spectatorSS.css" rel="stylesheet" type="text/css">
+    <title>Spectator</title>
+</head>
+
+<body>
+    <div id="spectator_container">
+        <section id='pad_container'>
+            <header>
+                <span>Rank</span>
+                <span>Player</span>
+            </header>
+            <section>
+                <ol>
+                    <% dummy.sort((a,b)=>a._rank-b._rank) %> 
+                    <% dummy.forEach(obj=>{ %>
+                        <% if(obj._rank==0){ %>
+                            <li class="in"><span>
+                                    <%= "Playing" %>
+                                </span> <span>
+                                    <%= obj._name %>
+                                </span></li>
+                            <% }else { %>
+                                <li class="out"><span>
+                                        <%= obj._rank %>
+                                    </span><span>
+                                        <%= obj._name %>
+                                    </span></li>
+                            <% } %>
+                                <% }) %>
+                </ol>
+            </section>
+        </section>
+    </div>
+    <script src="/js/fullscreen.js"></script>
+</body>
+
+</html>

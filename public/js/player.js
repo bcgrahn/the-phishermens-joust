@@ -6,7 +6,7 @@ const cooldown = 0.01;
 let game_over = false;
 let alerted = false;
 
-const background = document.querySelector('.background');
+const background = document.getElementById('status');
 
 function getRgb(value, threshold) {
 	if (value <= threshold / 2) {
