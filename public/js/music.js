@@ -5,7 +5,9 @@ bpmelem.innerText = bpm_offset;
 
 let slowCount = 0;
 let fastCount = 0;
-let init_bpm; 
+
+let socket = io();
+let sendingId = document.getElementById('sending-id');
 
 function parseMidi(midi){
   if (midi.header) {
@@ -72,6 +74,10 @@ function makeSong(midi){
     if (bpm_offset + rand_offset > -25 && bpm_offset + rand_offset < 85) {
       bpm_offset += rand_offset;
       Tone.Transport.bpm.value += rand_offset;
+      socket.emit('bpm-change', {
+				sender: sendingId.value,
+				bpm: bpm_offset
+			});
       // if (Math.abs(bpm_offset - 20) >= 40) {
       //   song_counter = Math.min(song_counter + 1, songs.length - 1);
       //   bpm_offset = -5;
