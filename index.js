@@ -32,22 +32,47 @@ function get_rgb(value, threshold) {
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
-app.set('views', 'views');
-
-app.get('/', (req, res) => {
-	res.render(__dirname + '/views/player');
-});
 
 app.get('/admin', (req, res) => {
-	res.render(__dirname + '/views/admin');
+	res.render('admin.ejs');
 });
 
 app.get('/', function (req, res) {
 	res.render('home.ejs');
 });
+
 app.get('/game', function (req, res) {
 	res.render('index.ejs');
 });
+
+//temporary dummy data for viewings
+let dummy = [
+	{
+		_id:'1',
+		_name:'Harold',
+		_rank:3,
+	},
+	{
+		_id:'2',
+		_name:'J0hnee',
+		_rank:4,
+	},
+	{
+		_id:'3',
+		_name:'Michael',
+		_rank:0,
+	},
+	{
+		_id:'1',
+		_name:'Harold',
+		_rank:0,
+	},
+]
+app.get('/spectate', function (req, res) {
+	res.render('spectator.ejs' ,{dummy});
+});
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const ssl = https.createServer(
 	{
