@@ -1,26 +1,22 @@
-const game_over = new Audio('../../Audio/Fx/game_over.mp3');
+let colour_value = 0;
+const soft_threshold = 2;
+const hard_threshold = 20 * soft_threshold;
+const sensitivity = 0.03;
+const cooldown = 0.01;
+let game_over = false;
+let alerted = false;
+
+const background = document.querySelector('.background');
 
 function getRgb(value, threshold) {
 	if (value <= threshold / 2) {
 		let red = (2 * (255 * value)) / threshold;
 		return `rgb(${red}, 255, 0)`;
 	} else {
-		let green = 255 - 255 * ((value - threshold / 2) / threshold);
+		let green = 255 - 255 * 2 * ((value - threshold / 2) / threshold);
 		return `rgb(255, ${green}, 0)`;
 	}
 }
-
-function getVolume(value, threshold) {
-	return value / threshold;
-}
-
-function gameOver(value, threshold) {
-	if (value > threshold) {
-		game_over.play();
-	}
-}
-
-// const body = document.querySelector('body');
 
 document.addEventListener('DOMContentLoaded', function () {
 	let socket = io();
@@ -29,6 +25,13 @@ document.addEventListener('DOMContentLoaded', function () {
 	let sendingId = document.getElementById('sending-id');
 	let form = document.getElementById('enter');
 	let orientation = document.getElementById('orientation');
+
+	setInterval(() => {
+		colour_value -= cooldown;
+		if (colour_value < 0) {
+			colour_value = 0;
+		}
+	}, 10);
 
 	let startStreaming = function (e) {
 		e.preventDefault();
@@ -61,26 +64,29 @@ document.addEventListener('DOMContentLoaded', function () {
 					Math.pow(e.acceleration.z, 2)
 			);
 
-			document.body.style.background = getRgb(total, 5);
-			gameOver(total, 5);
-		};
-		window.ondeviceorientation = function (e) {
-			if (!streaming) return false;
-			socket.emit('orientation', {
-				sender: sendingId.value,
-				alpha: e.alpha,
-				beta: e.beta,
-				gamma: e.gamma,
-			});
-			// orientation.innerText = "A: " + e.alpha.toFixed(2) + "\nB: " + e.beta.toFixed(2) + "\nG: " + e.gamma.toFixed(2);
+			colour_value += (sensitivity * total) / soft_threshold;
+
+			if (colour_value > soft_threshold || total > hard_threshold) {
+				colour_value = soft_threshold;
+				game_over = true;
+			}
+
+			background.style.backgroundColor = getRgb(colour_value, soft_threshold);
+
+			if (game_over && !alerted) {
+				game_over = false;
+				alerted = true;
+				setTimeout(() => {
+					alert('You lose :(');
+				}, 100);
+				setTimeout(() => {
+					alerted = false;
+				}, 3000);
+			}
 		};
 	} else {
 		status.style.display = 'block';
 		status.innerHTML =
 			'Unfortunately, this device does not have the right sensors.';
 	}
-
-	// socket.on('message', (player) => {
-	// 	alert(player.username);
-	// });
 });
