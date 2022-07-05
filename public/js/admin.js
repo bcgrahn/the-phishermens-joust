@@ -5,13 +5,14 @@ canvas.width = innerWidth;
 canvas.height = innerHeight;
 
 class Player {
-	constructor(x, y, radius, colour, velocity, username) {
+	constructor(x, y, radius, colour, velocity, username, id) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 		this.colour = colour;
 		this.velocity = velocity;
 		this.username = username;
+		this.id = id;
 	}
 
 	draw() {
@@ -30,6 +31,14 @@ class Player {
 		this.draw();
 		this.x += this.velocity.x;
 		this.y += this.velocity.y;
+	}
+
+	setColour(colour) {
+		this.colour = colour;
+	}
+
+	getUsername() {
+		return this.username;
 	}
 }
 
@@ -74,7 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			y: 0,
 		};
 
-		players.push(new Player(x, y, radius, colour, velocity, player.username));
+		players.push(new Player(x, y, radius, colour, velocity, player.username, player.id));
 		// alert("User '" + player.username + "' joined");
+	});
+
+	socket.on('motion-update', (player) => {
+		
 	});
 });
