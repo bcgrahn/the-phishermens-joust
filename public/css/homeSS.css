@@ -1,15 +1,22 @@
-* {
+*{
     padding: 0;
     margin: 0;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: #7b7b7b;
+    -webkit-appearance: none;
+}
+body{
+    overflow: hidden;
 }
 
 #home_container {
     width: 100vw;
     height: 100vh;
     /* background-color: whitesmoke; */
-    background-image: url('../images/duotone_2-min.png');
+    background-image: url('https://images-ext-2.discordapp.net/external/lzNYY4cQ-V-dW2eYN0OLXnL0zVgJ6N8iITaWbZzQI-o/%3Falt%3Dmedia%26token%3Db515303a-5290-462e-837f-50c43822e11d/https/firebasestorage.googleapis.com/v0/b/the-phisherman.appspot.com/o/duotone%2520%282%29-min.png?width=1246&height=701');
+    background-size: cover;
+    background-position: center;
+    
     /* background: linear-gradient(45deg, #560027, rgb(154, 22, 22), #F47A03 99%); */
 }
 
@@ -18,7 +25,7 @@
     top: 50%;
     left: 50%;
     transform:translate(-50%, -50%);
-    min-width: 30%;     
+    min-width: 40%;     
     margin: auto;
 
     padding: 25px;
@@ -64,6 +71,6 @@
 
 @media screen and (min-width:800px) {
     #home_container menu{
-        min-width: 20%;
+        min-width: 30%;
     }
 }
