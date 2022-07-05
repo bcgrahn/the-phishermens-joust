@@ -89,33 +89,28 @@ io = socketio(ssl);
 io.sockets.on('connection', function (socket) {
 	//add the socket id to stack of objects based on id
 	socket.on('player-join', (data) => {
-		let player = { username: data, id: socket.id };
+		let player = { username: data, id: socket.id, rgb: 'rgb(0, 0, 0)' };
 		players.push(player);
 		console.log("User '" + data + "' joined");
 		io.sockets.emit('message', player);
 	});
 
 	socket.on('motion', function (data) {
-		bg_col = 'rgb(0,255,0)';
-		let a = data;
-
-		let username = a.sender;
-		let x = a.x;
-		let y = a.y;
-		let z = a.z;
-
-		let total = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
+		const username = data.sender;
+		const rgb = data.rgb;
 
 		const index = players.findIndex((object) => {
 			return object.username === username;
 		});
-
-		if (total > 5) {
-			// console.log(sender_id + ' total: ' + total);
-			if (players) {
-				console.log(players);
-			}
+		if (players[index] != null) {
+			players[index].rgb = rgb;
 		}
+
+		if (rgb == 'rgb(255, 0, 0)') {
+			console.log(players[index].username + ' eliminated.');
+		}
+
+		io.sockets.emit('motion-update', players[index]);
 	});
 
 	// socket.on('orientation', function (data) {

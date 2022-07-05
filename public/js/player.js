@@ -1,8 +1,8 @@
 let colour_value = 0;
 const soft_threshold = 2;
-const hard_threshold = 20 * soft_threshold;
-const sensitivity = 0.03;
-const cooldown = 0.01;
+const hard_threshold = 40;
+const sensitivity = 0.005;
+const cooldown = 0.003;
 let game_over = false;
 let alerted = false;
 
@@ -49,19 +49,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	if (window.DeviceMotionEvent !== undefined) {
 		window.ondevicemotion = function (e) {
 			if (!streaming) return false;
-			socket.emit('motion', {
-				sender: sendingId.value,
-				x: e.acceleration.x,
-				y: e.acceleration.y,
-				z: e.acceleration.z,
-				interval: e.interval,
-				rotationRate: e.rotationRate,
-			});
-
 			let total = Math.sqrt(
 				Math.pow(e.acceleration.x, 2) +
-					Math.pow(e.acceleration.y, 2) +
-					Math.pow(e.acceleration.z, 2)
+				Math.pow(e.acceleration.y, 2) +
+				Math.pow(e.acceleration.z, 2)
 			);
 
 			colour_value += (sensitivity * total) / soft_threshold;
@@ -83,6 +74,11 @@ document.addEventListener('DOMContentLoaded', function () {
 					alerted = false;
 				}, 3000);
 			}
+
+			socket.emit('motion', {
+				sender: sendingId.value,
+				rgb: getRgb(colour_value, soft_threshold)
+			});
 		};
 	} else {
 		status.style.display = 'block';
@@ -90,3 +86,13 @@ document.addEventListener('DOMContentLoaded', function () {
 			'Unfortunately, this device does not have the right sensors.';
 	}
 });
+
+DeviceMotionEvent.requestPermission()
+	.then((response) => {
+		if (response == 'granted') {
+			window.addEventListener('devicemotion', (e) => {
+				// do something with e
+			});
+		}
+	})
+	.catch(console.error);
