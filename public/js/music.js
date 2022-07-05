@@ -96,7 +96,6 @@ function makeSong(midi){
       bpm_offset += rand_offset;
       Tone.Transport.bpm.value += rand_offset;
       socket.emit('bpm-change', {
-				sender: sendingId.value,
 				bpm: bpm_offset
 			});
       // if (Math.abs(bpm_offset - 20) >= 40) {
@@ -129,6 +128,10 @@ function updateSong() {
 
   Tone.Transport.start();
 }
+
+document.getElementById("restart-button").addEventListener("click", function() {
+  Tone.Transport.start(0);
+});
 
 
 document.getElementById("play-button").addEventListener("click", function() {
