@@ -2,6 +2,8 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const ejs = require('ejs');
+
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
@@ -40,6 +42,13 @@ app.get('/admin', (req, res) => {
 	res.render(__dirname + '/views/admin');
 });
 
+app.get('/', function (req, res) {
+	res.render('home.ejs');
+});
+app.get('/game', function (req, res) {
+	res.render('index.ejs');
+});
+
 const ssl = https.createServer(
 	{
 		key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
@@ -64,6 +73,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('motion', function (data) {
+		bg_col = 'rgb(0,255,0)';
 		let a = data;
 
 		let username = a.sender;
