@@ -50,22 +50,22 @@ let dummy = [
 	{
 		_id:'1',
 		_name:'Harold',
-		_rank:undefined,
+		_rank:3,
 	},
 	{
 		_id:'2',
 		_name:'J0hnee',
-		_rank:undefined,
+		_rank:4,
 	},
 	{
 		_id:'3',
 		_name:'Michael',
-		_rank:undefined,
+		_rank:0,
 	},
 	{
 		_id:'1',
 		_name:'Harold',
-		_rank:undefined,
+		_rank:0,
 	},
 ]
 app.get('/spectate', function (req, res) {

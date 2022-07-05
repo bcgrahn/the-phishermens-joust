@@ -19,24 +19,7 @@
             </ul>
         </menu>
     </div>
-    <script>
-        
-        let sizing = document.createElement('button');
-       
-        sizing.addEventListener("click", function (e) {
-            toggleFullScreen();
-        }, false);
-        menu.appendChild(sizing);
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-            } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-            }
-        }
-    </script>
+    <script src="/js/fullscreen.js"></script>
 </body>
 
 </html>
