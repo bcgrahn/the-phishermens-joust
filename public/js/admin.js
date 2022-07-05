@@ -40,6 +40,10 @@ class Player {
 	getUsername() {
 		return this.username;
 	}
+
+	getId() {
+		return this.id;
+	}
 }
 
 let x_center = canvas.width / 2;
@@ -73,7 +77,7 @@ const players = [];
 document.addEventListener('DOMContentLoaded', () => {
 	let socket = io();
 	init();
-	socket.on('message', (player) => {
+	socket.on('player-connected', (player) => {
 		let x = Math.random() * canvas.width;
 		let y = Math.random() * canvas.height;
 		let radius = 30;
@@ -83,11 +87,23 @@ document.addEventListener('DOMContentLoaded', () => {
 			y: 0,
 		};
 
-		players.push(new Player(x, y, radius, colour, velocity, player.username, player.id));
+		players.push(
+			new Player(x, y, radius, colour, velocity, player.username, player.id)
+		);
 		// alert("User '" + player.username + "' joined");
 	});
 
+	socket.on('player-disconnected', (player) => {
+		const index = players.findIndex((object) => {
+			return object.getId() === player.id;
+		});
+
+		players.splice(index, 1);
+	});
+
 	socket.on('motion-update', (player) => {
-		
+		players.forEach((obj) => {
+			obj.setColour(player.rgb);
+		});
 	});
 });

@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', function () {
 	let form = document.getElementById('enter');
 	let orientation = document.getElementById('orientation');
 
+	socket.on('redirect', (url) => {
+		window.location.href = url;
+	});
+
 	setInterval(() => {
 		colour_value -= cooldown;
 		if (colour_value < 0) {
@@ -51,8 +55,8 @@ document.addEventListener('DOMContentLoaded', function () {
 			if (!streaming) return false;
 			let total = Math.sqrt(
 				Math.pow(e.acceleration.x, 2) +
-				Math.pow(e.acceleration.y, 2) +
-				Math.pow(e.acceleration.z, 2)
+					Math.pow(e.acceleration.y, 2) +
+					Math.pow(e.acceleration.z, 2)
 			);
 
 			colour_value += (sensitivity * total) / soft_threshold;
@@ -77,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			socket.emit('motion', {
 				sender: sendingId.value,
-				rgb: getRgb(colour_value, soft_threshold)
+				rgb: getRgb(colour_value, soft_threshold),
 			});
 		};
 	} else {
