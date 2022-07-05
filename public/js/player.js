@@ -83,19 +83,17 @@ if (window.DeviceMotionEvent !== undefined) {
 			}, 3000);
 		}
 
-			socket.emit('motion', {
-				sender: sendingId.value,
-				rgb: getRgb(colour_value, soft_threshold)
-			});
-	
-	}
-	
+		socket.emit('motion', {
+			sender: sendingId.value,
+			rgb: getRgb(colour_value, soft_threshold),
+		});
+	};
+
 	socket.on('bpm-change', (bpm_change) => {
 		hard_threshold *= bpm_change.threshold_percentage;
 		console.log(hard_threshold);
 	});
-}
-else {
+} else {
 	status.style.display = 'block';
 	status.innerHTML =
 		'Unfortunately, this device does not have the right sensors.';
