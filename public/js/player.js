@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 	
 	socket.on('bpm-change', (bpm_change) => {
-		hard_threshold *= bpm_change.bpm;
+		hard_threshold *= bpm_change.threshold_percentage;
+		console.log(hard_threshold);
 	});
 });
 
