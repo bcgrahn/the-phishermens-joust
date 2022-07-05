@@ -5,7 +5,22 @@ bpmelem.innerText = bpm_offset;
 
 let slowCount = 0;
 let fastCount = 0;
-let init_bpm; 
+let init_bpm;
+
+const maximum_random_offset = 35;
+const minimum_random_offset = 15;
+const random_offset_scale = maximum_random_offset - minimum_random_offset;
+
+const minimum_offset = -25;
+const maximum_offset = 85;
+const offset_range = maximum_offset - minimum_offset;
+
+const minimum_percentage = 0.5;
+const maximum_percentage = 2;
+const percentage_scale = maximum_percentage - minimum_percentage;
+
+let socket = io();
+let sendingId = document.getElementById('sending-id');
 
 function parseMidi(midi){
   if (midi.header) {
@@ -14,6 +29,12 @@ function parseMidi(midi){
       console.log(parsedMidiObject);
       return parsedMidiObject
   }
+}
+
+function convert_offset_to_percentage() {
+  let percentage = bpm_offset - minimum_offset / (offset_range);
+  let scaled_percentage = (percentage * percentage_scale) + minimum_percentage;
+  return scaled_percentage;
 }
 
 function makeSong(midi){
@@ -69,16 +90,21 @@ function makeSong(midi){
         console.log("JUMP DOWN");
       }
     }
-    if (bpm_offset + rand_offset > -25 && bpm_offset + rand_offset < 85) {
+    if (bpm_offset + rand_offset > minimum_offset && bpm_offset + rand_offset < maximum_offset) {
       bpm_offset += rand_offset;
       Tone.Transport.bpm.value += rand_offset;
       // if (Math.abs(bpm_offset - 20) >= 40) {
-      //   song_counter = Math.min(song_counter + 1, songs.length - 1);
-      //   bpm_offset = -5;
-      //   updateSong();
-      // }
-    }
-    bpmelem.innerText = bpm_offset;
+        //   song_counter = Math.min(song_counter + 1, songs.length - 1);
+        //   bpm_offset = -5;
+        //   updateSong();
+        // }
+      }
+      let threshold_percentage = convert_offset_to_percentage();
+      bpmelem.innerText = bpm_offset;
+      socket.emit('bpm-change', {
+        bpm_offset: bpm_offset,
+        threshold_percentage: threshold_percentage
+      });
   }, "9");
 }
 
@@ -88,7 +114,7 @@ function updateSong() {
   }
   Tone.Transport.cancel();
     
-  fetch("./midi_songs/hing-yan-au_os.json").then(response => {
+  fetch("./../midi_songs/hing-yan-au_os.json").then(response => {
     return response.json();
   }).then(data => {
     // Work with JSON data here
@@ -103,6 +129,10 @@ function updateSong() {
   Tone.Transport.start();
 }
 
+document.getElementById("restart-button").addEventListener("click", function() {
+  Tone.Transport.start(0);
+});
+
 
 document.getElementById("play-button").addEventListener("click", function() {
   if (Tone.Transport.state !== 'started') {
@@ -115,6 +145,6 @@ document.getElementById("play-button").addEventListener("click", function() {
 
 function random_bpm_offset() {
   let neg = (Math.random() > 0.5 ? 1 : -1);
-  let rand = (Math.round(Math.random() * 20) + 15);
+  let rand = (Math.round(Math.random() * random_offset_scale) + minimum_random_offset);
   return rand * neg
 }

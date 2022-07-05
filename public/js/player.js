@@ -1,6 +1,6 @@
 let colour_value = 0;
-const soft_threshold = 2;
-const hard_threshold = 40;
+let soft_threshold = 2;
+let hard_threshold = 40;
 const sensitivity = 0.005;
 const cooldown = 0.003;
 let game_over = false;
@@ -83,17 +83,23 @@ if (window.DeviceMotionEvent !== undefined) {
 			}, 3000);
 		}
 
-		socket.emit('motion', {
-			sender: sendingId.value,
-			rgb: getRgb(colour_value, soft_threshold),
-		});
-	};
-} else {
+			socket.emit('motion', {
+				sender: sendingId.value,
+				rgb: getRgb(colour_value, soft_threshold)
+			});
+	
+	}
+	
+	socket.on('bpm-change', (bpm_change) => {
+		hard_threshold *= bpm_change.threshold_percentage;
+		console.log(hard_threshold);
+	});
+}
+else {
 	status.style.display = 'block';
 	status.innerHTML =
 		'Unfortunately, this device does not have the right sensors.';
 }
-// });
 
 DeviceMotionEvent.requestPermission()
 	.then((response) => {
