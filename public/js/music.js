@@ -5,6 +5,7 @@ bpmelem.innerText = bpm_offset;
 
 let slowCount = 0;
 let fastCount = 0;
+<<<<<<< HEAD
 let init_bpm;
 
 const maximum_random_offset = 35;
@@ -20,6 +21,11 @@ const maximum_percentage = 2;
 const percentage_scale = maximum_percentage - minimum_percentage;
 
 
+=======
+
+let socket = io();
+let sendingId = document.getElementById('sending-id');
+>>>>>>> 3b0377189924d13a055182afcd973d7b0e050336
 
 function parseMidi(midi){
   if (midi.header) {
@@ -92,6 +98,10 @@ function makeSong(midi){
     if (bpm_offset + rand_offset > minimum_offset && bpm_offset + rand_offset < maximum_offset) {
       bpm_offset += rand_offset;
       Tone.Transport.bpm.value += rand_offset;
+      socket.emit('bpm-change', {
+				sender: sendingId.value,
+				bpm: bpm_offset
+			});
       // if (Math.abs(bpm_offset - 20) >= 40) {
       //   song_counter = Math.min(song_counter + 1, songs.length - 1);
       //   bpm_offset = -5;

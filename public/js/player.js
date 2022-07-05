@@ -1,6 +1,6 @@
 let colour_value = 0;
-const soft_threshold = 2;
-const hard_threshold = 40;
+let soft_threshold = 2;
+let hard_threshold = 40;
 const sensitivity = 0.005;
 const cooldown = 0.003;
 let game_over = false;
@@ -85,6 +85,10 @@ document.addEventListener('DOMContentLoaded', function () {
 		status.innerHTML =
 			'Unfortunately, this device does not have the right sensors.';
 	}
+	
+	socket.on('bpm-change', (bpm_change) => {
+		hard_threshold *= bpm_change.bpm;
+	});
 });
 
 DeviceMotionEvent.requestPermission()
