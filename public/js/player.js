@@ -1,8 +1,8 @@
 let colour_value = 0;
-let soft_threshold = 2;
-let hard_threshold = 40;
-const sensitivity = 0.005;
-const cooldown = 0.003;
+let soft_threshold = 5;
+let hard_threshold = 50;
+const sensitivity = 0.004;
+const cooldown = 0.002 * soft_threshold;
 let game_over = false;
 let alerted = false;
 
@@ -63,7 +63,7 @@ if (window.DeviceMotionEvent !== undefined) {
 				Math.pow(e.acceleration.z, 2)
 		);
 
-		colour_value += (sensitivity * total) / soft_threshold;
+		colour_value += sensitivity * total;
 
 		if (colour_value > soft_threshold || total > hard_threshold) {
 			colour_value = soft_threshold;

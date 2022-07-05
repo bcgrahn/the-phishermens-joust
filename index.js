@@ -123,10 +123,9 @@ io.sockets.on('connection', function (socket) {
 		});
 		if (players[index] != null) {
 			players[index].rgb = rgb;
-		}
-
-		if (rgb == 'rgb(255, 0, 0)') {
-			console.log(players[index].username + ' eliminated.');
+			if (rgb == 'rgb(255, 0, 0)') {
+				console.log(players[index].username + ' eliminated.');
+			}
 		}
 
 		io.sockets.emit('motion-update', players[index]);
