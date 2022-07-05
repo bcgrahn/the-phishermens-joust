@@ -76,6 +76,24 @@ const players = [];
 
 document.addEventListener('DOMContentLoaded', () => {
 	let socket = io();
+	socket.emit('request-players', '');
+	socket.on('player-load', (loaded_players) => {
+		loaded_players.forEach((player) => {
+			let x = Math.random() * canvas.width;
+			let y = Math.random() * canvas.height;
+			let radius = 30;
+			let colour = 'rgb(255, 100, 0)';
+			let velocity = {
+				x: 0,
+				y: 0,
+			};
+
+			players.push(
+				new Player(x, y, radius, colour, velocity, player.username, player.id)
+			);
+		});
+	});
+
 	init();
 	socket.on('player-connected', (player) => {
 		let x = Math.random() * canvas.width;
@@ -102,8 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 
 	socket.on('motion-update', (player) => {
-		players.forEach((obj) => {
-			obj.setColour(player.rgb);
+		const index = players.findIndex((object) => {
+			return object.getId() === player.id;
 		});
+
+		players[index].setColour(player.rgb);
 	});
 });

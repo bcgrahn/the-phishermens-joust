@@ -48,31 +48,29 @@ app.get('/game', function (req, res) {
 //temporary dummy data for viewings
 let dummy = [
 	{
-		_id:'1',
-		_name:'Harold',
-		_rank:3,
+		_id: '1',
+		_name: 'Harold',
+		_rank: 3,
 	},
 	{
-		_id:'2',
-		_name:'J0hnee',
-		_rank:4,
+		_id: '2',
+		_name: 'J0hnee',
+		_rank: 4,
 	},
 	{
-		_id:'3',
-		_name:'Michael',
-		_rank:0,
+		_id: '3',
+		_name: 'Michael',
+		_rank: 0,
 	},
 	{
-		_id:'1',
-		_name:'Harold',
-		_rank:0,
+		_id: '1',
+		_name: 'Harold',
+		_rank: 0,
 	},
-]
+];
 app.get('/spectate', function (req, res) {
-	res.render('spectator.ejs' ,{dummy});
+	res.render('spectator.ejs', { dummy });
 });
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 const ssl = https.createServer(
 	{
@@ -88,21 +86,7 @@ ssl.listen(process.env.PORT, () => {
 
 io = socketio(ssl);
 
-// let socketIo = require('socket.io')(https, {cors: {origin: '*'}});
-
 io.sockets.on('connection', function (socket) {
-	//check if client is in the database
-	// console.log('client ' + socket.id + ' connected');
-	// if (players.length > 0) {
-	// 	console.log('length: ' + players.length);
-	// 	const index = players.findIndex((object) => {
-	// 		return object.id === socket.id;
-	// 	});
-	// 	console.log('index: ' + index);
-	// } else {
-	// 	socket.emit('redirect', '/');
-	// }
-
 	//add the socket id to stack of objects based on id
 	socket.on('player-join', (user_name) => {
 		if (user_name.trim() != '') {
@@ -124,6 +108,10 @@ io.sockets.on('connection', function (socket) {
 			);
 			socket.emit('redirect', '/');
 		}
+	});
+
+	socket.on('request-players', (data) => {
+		socket.emit('player-load', players);
 	});
 
 	socket.on('motion', function (data) {
