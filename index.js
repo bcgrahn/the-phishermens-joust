@@ -72,6 +72,8 @@ app.get('/spectate', function (req, res) {
 	res.render('spectator.ejs' ,{dummy});
 });
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 const ssl = https.createServer(
 	{
 		key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
