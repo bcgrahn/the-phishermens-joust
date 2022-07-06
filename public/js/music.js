@@ -114,7 +114,7 @@ function updateSong() {
   }
   Tone.Transport.cancel();
     
-  fetch("./../midi_songs/hing-yan-au_os.json").then(response => {
+  fetch("./../audio_files/hing-yan-au_os.json").then(response => {
     return response.json();
   }).then(data => {
     
