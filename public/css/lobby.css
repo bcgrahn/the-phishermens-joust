@@ -53,13 +53,14 @@ p {
     margin-bottom: 5vh;
     border: 10px solid rgb(36, 209, 134);
     border-radius: 20px;
+    flex-wrap:wrap;
 }
 
 .left-container {
     display: flex;
     flex-direction: column;
-    width: 30%;
-    height: 100%;
+    width: 28%;
+    height: 80%;
     padding: 2%;
     justify-content: center;
     text-align: center;
@@ -103,10 +104,15 @@ p {
     background-color: rgb(36, 209, 134);
     border-radius: 10px;
     padding: 2%;
-    margin-left: 5%;
-    margin-right: 5%;
+    width: 100%;
     justify-content: center;
     text-align: center;
+}
+
+
+.button-container {
+    width: 20%;
+    margin: auto;
 }
 
 .right-container {
@@ -122,16 +128,16 @@ p {
 .right-top-container {
     display: flex;
     flex-direction: column;
-    width: 70%;
-    height: 90%;
+    width: 68%;
+    height: 78%;
     padding: 2%;
 }
 
 .right-bottom-container {
     display: flex;
     flex-direction: row;
-    width: 70%;
-    height: 120px;
+    width: 100%;
+    height: 15%;
     padding: 2%;
 }
 
@@ -169,4 +175,23 @@ p {
     display: flex;
     width: 50%;
     justify-content: center;
+}
+
+@media screen and (max-width: 680px) {
+    .qr-container{
+        display: none;
+    }
+    .left-container {
+        width: 100%;
+        height: 33.33%;
+        flex-direction: row;
+    }
+    .right-top-container {
+        width: 100%;
+        height: 33.33%;
+    }
+    .right-bottom-container {
+        width: 100%;
+        height: 33.33%;
+    }
 }
