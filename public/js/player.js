@@ -6,6 +6,10 @@ const cooldown = 0.002 * soft_threshold;
 let game_over = false;
 let alerted = false;
 
+let total_acceleration = 0;
+let prev_acceleration;
+let temp_acceleration;
+
 const background = document.getElementById('status');
 
 function getRgb(value, threshold) {
@@ -57,15 +61,33 @@ form.addEventListener('submit', startStreaming);
 if (window.DeviceMotionEvent !== undefined) {
 	window.ondevicemotion = function (e) {
 		if (!streaming) return false;
-		let total = Math.sqrt(
+
+		// //Velocity
+		// total_acceleration += Math.sqrt(
+		// 	Math.pow(e.acceleration.x, 2) +
+		// 	Math.pow(e.acceleration.y, 2) +
+		// 	Math.pow(e.acceleration.z, 2) 
+		// );
+
+		//Acceleration
+		total_acceleration = Math.sqrt(
 			Math.pow(e.acceleration.x, 2) +
-				Math.pow(e.acceleration.y, 2) +
-				Math.pow(e.acceleration.z, 2)
+			Math.pow(e.acceleration.y, 2) +
+			Math.pow(e.acceleration.z, 2) 
 		);
 
-		colour_value += sensitivity * total;
+		// //Rate of change of Acceleration
+		// temp_acceleration = Math.sqrt(
+		// 	Math.pow(e.acceleration.x, 2) +
+		// 	Math.pow(e.acceleration.y, 2) +
+		// 	Math.pow(e.acceleration.z, 2)
+		// );
+		// total_acceleration = prev_acceleration - temp_acceleration;
+		// prev_acceleration = temp_acceleration;
 
-		if (colour_value > soft_threshold || total > hard_threshold) {
+		colour_value += sensitivity * total_acceleration;
+
+		if (colour_value > soft_threshold || total_acceleration > hard_threshold) {
 			colour_value = soft_threshold;
 			game_over = true;
 			socket.emit('status-change', true);
@@ -90,10 +112,11 @@ if (window.DeviceMotionEvent !== undefined) {
 		});
 	};
 
-	// socket.on('bpm-change', (bpm_change) => {
-	// 	hard_threshold *= bpm_change.threshold_percentage;
-	// 	console.log(hard_threshold);
-	// });
+	socket.on('bpm-change', (bpm_change) => {
+		hard_threshold *= bpm_change.threshold_percentage;
+		console.log(hard_threshold);
+	});
+	
 } else {
 	status.style.display = 'block';
 	status.innerHTML =
