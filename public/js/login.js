@@ -45,7 +45,12 @@ socket.on('force-refresh', () => {
 socket.on('game-start', () => {
 	if (playerStatus == 'ready') {
 		playerStatus = 'playing';
-		socket.emit('status-change', playerStatus);
+
+		socket.emit('status-change', {
+			status: playerStatus,
+			colour: getRgb(colour_value, soft_threshold)
+		});
+
 		cooldown = 0.0005 * soft_threshold;
 		container.innerHTML = '';
 		setInterval(() => {
@@ -56,6 +61,7 @@ socket.on('game-start', () => {
 		}, 10);
 	} else {
 		alert("You weren't ready'");
+		window.location = "/spectate";
 	}
 });
 
@@ -104,7 +110,11 @@ if (window.DeviceMotionEvent !== undefined) {
 				}
 				motionTracking = false;
 				playerStatus = 'ready';
-				socket.emit('status-change', playerStatus);
+
+				socket.emit('status-change', {
+					status: playerStatus,
+					colour: getRgb(colour_value, soft_threshold)
+				});
 
 				container.style.backgroundColor = 'rgb(36, 209, 134)';
 				container.innerHTML = 'Game will begin soon';
@@ -148,8 +158,16 @@ if (window.DeviceMotionEvent !== undefined) {
 
 				container.innerHTML = "You are out :( Better luck next time!"
 
-				socket.emit('status-change', playerStatus);
+				// socket.emit('status-change', {
+				// 	status: playerStatus,
+				// 	colour: getRgb(colour_value, soft_threshold)
+				// });
 			}
+
+			socket.emit('status-change', {
+				status: playerStatus,
+				colour: getRgb(colour_value, soft_threshold)
+			});
 
 			container.style.backgroundColor = getRgb(colour_value, soft_threshold);
 
