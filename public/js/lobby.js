@@ -1,5 +1,8 @@
 let socket = io();
 
+let readyCount = 0;
+let totalCount = 0;
+
 socket.on('player-connected', (player) => {
 	addPlayer(player);
 });
@@ -8,16 +11,19 @@ socket.on('player-disconnected', (player) => {
 	removePlayer(player);
 });
 
-socket.on('status-change', (data) => {
-	const e = document.getElementById(`player-${data.id}`).children.item(1);
-	e.innerHTML = data.status.status;
+socket.on('status-change', (player) => {
+	const e = document.getElementById(`player-${player.id}`).children.item(1);
+	e.innerHTML = player.status.status;
 
-	if (data.status.status == 'ready') {
+	if (player.status.status == 'ready') {
+		readyCount += 1;
 		e.style.color = 'rgb(36, 209, 134)';
-	} else if (data.status.status == 'eliminated') {
+
+		socket.emit('player-change', readyCount, totalCount);
+	} else if (player.status.status == 'eliminated') {
 		e.style.color = 'rgb(194, 72, 72)';
-	} else if (data.status.status == 'playing') {
-		e.style.color = data.status.colour;
+	} else if (player.status.status == 'playing') {
+		e.style.color = player.status.colour;
 		// e.innerHTML = '';
 		// e.style.backgroundColor = data.status.colour;
 		// e.style.width = `${50 - data.status.value * 50}%`;
@@ -56,12 +62,24 @@ function addPlayer(player) {
 
 	const ol = document.querySelector('.player-ul');
 	ol.appendChild(li);
+
+	totalCount += 1;
+
+	socket.emit('player-change', readyCount, totalCount);
 }
 
 function removePlayer(player) {
 	const el = document.getElementById(`player-${player.id}`).children.item(1);
 	el.innerHTML = 'Disconnected';
 	el.style.color = 'rgb(194, 72, 72)';
+
+	totalCount -= 1;
+
+	if (player.status.status == 'ready') {
+		readyCount -= 1;
+	}
+
+	socket.emit('player-change', readyCount, totalCount);
 
 	setTimeout(() => {
 		const e = document.getElementById(`player-${player.id}`);

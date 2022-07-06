@@ -39,7 +39,7 @@ function getRgb(value, threshold) {
 // })
 
 //BPM CHANGES
-socket.on('bpm-change', function(threshold_percentage) {
+socket.on('bpm-change', function (threshold_percentage) {
 	hard_threshold *= threshold_percentage;
 	soft_threshold *= threshold_percentage;
 });
@@ -54,7 +54,7 @@ socket.on('game-start', () => {
 
 		socket.emit('status-change', {
 			status: playerStatus,
-			colour: getRgb(colour_value, soft_threshold)
+			colour: getRgb(colour_value, soft_threshold),
 		});
 
 		cooldown = 0.005 * soft_threshold;
@@ -67,7 +67,7 @@ socket.on('game-start', () => {
 		}, 10);
 	} else {
 		alert("You weren't ready'");
-		window.location = "/spectate";
+		window.location = '/spectate';
 	}
 });
 
@@ -91,6 +91,12 @@ socket.on('availability-response', (availible) => {
 	} else {
 		const prompt = document.querySelector('.prompt');
 		prompt.innerHTML = 'User already exists';
+	}
+});
+
+socket.on('player-change', (readyCount, totalCount) => {
+	if (playerStatus == 'ready') {
+		container.innerHTML = `${readyCount}/${totalCount} players ready`;
 	}
 });
 
@@ -119,7 +125,7 @@ if (window.DeviceMotionEvent !== undefined) {
 
 				socket.emit('status-change', {
 					status: playerStatus,
-					colour: getRgb(colour_value, soft_threshold)
+					colour: getRgb(colour_value, soft_threshold),
 				});
 
 				container.style.backgroundColor = 'rgb(36, 209, 134)';
@@ -132,7 +138,6 @@ if (window.DeviceMotionEvent !== undefined) {
 				150 * indicator_value + 50
 			}% at 50% 150%)`;
 		} else if (playerStatus == 'playing') {
-			
 			let total_acceleration = Math.sqrt(
 				Math.pow(e.acceleration.x, 2) +
 					Math.pow(e.acceleration.y, 2) +
@@ -160,9 +165,9 @@ if (window.DeviceMotionEvent !== undefined) {
 				console.log('PLAYER DIED');
 				new Audio('./../audio_files/game_over.mp3').play();
 
-				playerStatus = "eliminated";
+				playerStatus = 'eliminated';
 
-				container.innerHTML = "You are out :( Better luck next time!"
+				container.innerHTML = 'You are out :( Better luck next time!';
 
 				// socket.emit('status-change', {
 				// 	status: playerStatus,
@@ -173,14 +178,12 @@ if (window.DeviceMotionEvent !== undefined) {
 			socket.emit('status-change', {
 				status: playerStatus,
 				colour: getRgb(colour_value, soft_threshold),
-                value: colour_value/soft_threshold
+				value: colour_value / soft_threshold,
 			});
 
 			container.style.backgroundColor = getRgb(colour_value, soft_threshold);
 
 			if (game_over && !alerted) {
-				
-				
 				game_over = false;
 				alerted = true;
 				setTimeout(() => {
@@ -195,10 +198,8 @@ if (window.DeviceMotionEvent !== undefined) {
 				sender: sendingId.value,
 				rgb: getRgb(colour_value, soft_threshold),
 			});
-
 		} else {
 			return;
 		}
 	};
 }
-
