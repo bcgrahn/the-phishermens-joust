@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <header>
+        <h1>Login</h1>
+    </header>
+    <div class="container">
+        <div class="status-sheet">
+            <h2>Shake your phone to ready up!</h2>
+        </div>
+        <div class="login-sheet">
+            <h2>Please enter your username</h2>
+            <input type="text" class="username-input" placeholder="Username" autocorrect="off" autocapitalize="off" required>
+            <input type="submit" class="button-input" value="Join Game!">
+        </div>
+        <div class="indicator-sheet"></div>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/fullscreen.js"></script>
+<script src="/js/login.js"></script>
+</html>

@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    /* outline: 1px solid white;    */
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
+    flex-direction: column;
+    
+}
+
+header {
+    width: 95vw;
+    display: flex;
+    justify-content: center;
+    padding: 1vmax;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    border: 10px solid rgb(36, 209, 134);
+    border-radius: 20px;
+}
+
+h1 {
+    font-size: 3vmax;
+}
+
+h2 {
+    font-size: 2.5vmax;
+    padding: 5%;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 95vw;
+    margin-bottom: 5vh;
+    border: 10px solid rgb(36, 209, 134);
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.login-sheet {
+    display: flex;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #111;
+
+    clip-path: circle(100% at 50% 50%);
+    transition: clip-path 500ms ease-in-out;
+}
+
+.login-sheet.after {
+    clip-path: circle(0% at 50% 50%); 
+}
+
+.status-sheet {
+    display: flex;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #111;
+}
+
+.indicator-sheet {
+    display: flex;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgb(36, 209, 134);
+
+    clip-path: circle(0% at 50% 50%); 
+}
+
+.username-input {
+    padding: 3%;
+    background-color: #111;
+    border: 10px solid rgb(36, 209, 134);
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-input {
+    border: none;
+    font-weight: 900;
+    margin: 5%;
+    padding: 3%;
+    background-color: rgb(36, 209, 134);
+    border-radius: 20px;
+}

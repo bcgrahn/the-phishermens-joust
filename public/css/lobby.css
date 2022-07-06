@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    /* outline: 1px solid white;    */
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
+    flex-direction: column;
+    
+}
+
+header {
+    width: 95vw;
+    display: flex;
+    justify-content: center;
+    padding: 1vmax;
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+    border: 10px solid rgb(36, 209, 134);
+    border-radius: 20px;
+}
+
+h1 {
+    font-size: 3vmax;
+}
+
+h2 {
+    font-size: 2vmax;
+    padding: 5%;
+}
+
+p {
+    font-size: 1vmax;
+}
+
+.container {
+    display: flex;
+    flex: 1;
+    width: 95vw;
+    margin-bottom: 5vh;
+    border: 10px solid rgb(36, 209, 134);
+    border-radius: 20px;
+}
+
+.left-container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+    padding: 2%;
+    justify-content: center;
+    text-align: center;
+}
+
+.qr-container {
+    display: flex;
+    flex: 1;
+    padding: 2%;
+    justify-content: center;
+    align-items: center;
+}
+
+.qrcode {
+    width: 70%;
+}
+
+.url {
+    padding: 5%;
+}
+
+.start-button {
+    font-weight: 900;
+    font-size: 3vmax;
+    background-color: rgb(36, 209, 134);
+    border-radius: 10px;
+    
+}
+
+.right-container {
+    width: 70%;
+    height: 100%;
+    padding: 2%;
+}
+
+.player-ul {
+    max-height: 90%;
+}
+
+.header-li {
+    display: flex;
+    flex:1;
+    border-bottom: 3px solid rgb(36, 209, 134);
+    font-weight: 900;
+    padding-bottom: 1%;
+}
+
+.player-li {
+    display: flex;
+    flex:1;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    font-weight: 400;
+}
+
+.player-li:nth-child(odd) {
+    background-color: rgba(36, 209, 134, 0.1);
+}
+
+.player {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+}
+
+.status {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+}
