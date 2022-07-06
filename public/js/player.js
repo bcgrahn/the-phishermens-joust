@@ -68,6 +68,7 @@ if (window.DeviceMotionEvent !== undefined) {
 		if (colour_value > soft_threshold || total > hard_threshold) {
 			colour_value = soft_threshold;
 			game_over = true;
+			socket.emit('status-change', true);
 		}
 
 		background.style.backgroundColor = getRgb(colour_value, soft_threshold);
@@ -89,10 +90,10 @@ if (window.DeviceMotionEvent !== undefined) {
 		});
 	};
 
-	socket.on('bpm-change', (bpm_change) => {
-		hard_threshold *= bpm_change.threshold_percentage;
-		console.log(hard_threshold);
-	});
+	// socket.on('bpm-change', (bpm_change) => {
+	// 	hard_threshold *= bpm_change.threshold_percentage;
+	// 	console.log(hard_threshold);
+	// });
 } else {
 	status.style.display = 'block';
 	status.innerHTML =

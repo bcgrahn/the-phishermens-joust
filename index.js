@@ -33,17 +33,20 @@ function get_rgb(value, threshold) {
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
-app.get('/admin', (req, res) => {
-	res.render('admin.ejs');
+// app.get('/admin', (req, res) => {
+// 	res.render('admin.ejs');
+// });
+app.get('/lobby', (req, res) => {
+	res.render('lobby.ejs');
 });
 
 app.get('/', function (req, res) {
-	res.render('home.ejs');
+	res.render('login.ejs');
 });
 
-app.get('/game', function (req, res) {
-	res.render('index.ejs');
-});
+// app.get('/game', function (req, res) {
+// 	res.render('index.ejs');
+// });
 
 //temporary dummy data for viewings
 let dummy = [
@@ -86,12 +89,16 @@ ssl.listen(process.env.PORT, () => {
 
 io = socketio(ssl);
 
+setTimeout(() => {
+	io.sockets.emit('server-restart');
+}, 1000);
+
 io.sockets.on('connection', function (socket) {
 	//add the socket id to stack of objects based on id
 	socket.on('player-join', (user_name) => {
 		if (user_name.trim() != '') {
 			if (user_name == 'admin') {
-				socket.emit('redirect', '/admin');
+				socket.emit('redirect', '/lobby');
 			} else {
 				let player = {
 					username: user_name,
@@ -129,6 +136,10 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		io.sockets.emit('motion-update', players[index]);
+	});
+
+	socket.on('status-change', (status) => {
+		io.sockets.emit('status-change', status, socket.id);
 	});
 
 	// socket.on('orientation', function (data) {
