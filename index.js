@@ -142,12 +142,12 @@ io.sockets.on('connection', function (socket) {
 	// })
 
 	socket.on('server-game-start', () => {
-		console.log('server-game-start request logged');
+		// console.log('server-game-start request logged');
 		io.sockets.emit('game-start');
 	});
 
 	socket.on('bpm-change', (bpmchange) => {
-		console.log('bpm-change request logged');
+		// console.log('bpm-change request logged');
 		io.sockets.emit('bpm-change', bpmchange);
 	});
 
