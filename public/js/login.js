@@ -45,6 +45,7 @@ socket.on('force-refresh', () => {
 socket.on('game-start', () => {
 	if (playerStatus == 'ready') {
 		playerStatus = 'playing';
+		socket.emit('status-change', playerStatus);
 		cooldown = 0.0005 * soft_threshold;
 		container.innerHTML = '';
 		setInterval(() => {

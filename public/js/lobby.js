@@ -13,8 +13,10 @@ socket.on('status-change', (data) => {
 	e.innerHTML = data.status;
 	if (data.status == 'ready') {
 		e.style.color = 'rgb(36, 209, 134)';
-	} else if (data.status = 'eliminated') {
+	} else if (data.status == 'eliminated') {
 		e.style.color = 'rgb(255, 0, 0)';
+	} else if (data.status == 'playing') {
+		e.style.color = 'rgb(0, 255, 0)';
 	}
 });
 
