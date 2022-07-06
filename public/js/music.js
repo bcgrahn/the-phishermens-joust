@@ -5,6 +5,9 @@ let bpm_offset = 0;
 let slowCount = 0;
 let fastCount = 0;
 
+let loop_interval;
+let rand_interval = 5000;
+
 const maximum_random_offset = 35;
 const minimum_random_offset = 15;
 const random_offset_scale = maximum_random_offset - minimum_random_offset;
@@ -17,8 +20,23 @@ const minimum_percentage = 0.66;
 const maximum_percentage = 1.33;
 const percentage_scale = maximum_percentage - minimum_percentage;
 
+const minimum_interval = 3000;
+const maximum_interval = 10000;
+const interval_range = maximum_interval - minimum_interval;
+
 let music_socket = io();
 let sendingId = document.getElementById('sending-id');
+
+
+function random_bpm_offset() {
+  let neg = (Math.random() > 0.5 ? 1 : -1);
+  let rand = (Math.round(Math.random() * random_offset_scale) + minimum_random_offset);
+  return rand * neg
+}
+
+function random_interval() {
+  return Math.round(Math.random() * interval_range) + minimum_interval;
+}
 
 function parseMidi(midi){
   if (midi.header) {
@@ -69,7 +87,7 @@ function makeSong(midi){
       let part = new Tone.Part(function(time,value){
           synths[i].triggerAttackRelease(value.name, value.duration, time, value.velocity)
       },midi.tracks[i].notes).start()                  
-  }  
+  }
 
   Tone.Transport.scheduleRepeat(function(time){
     let rand_offset = random_bpm_offset();
@@ -105,6 +123,39 @@ function makeSong(midi){
   }, "9");
 }
 
+// function update_bpm() {
+//   let rand_offset = random_bpm_offset();
+//     if (bpm_offset < 15) {
+//       fastCount = 0;
+//       slowCount++;
+//       if (slowCount > 2) {
+//         rand_offset = 50 - bpm_offset;
+//         console.log("JUMP UP");
+//       }
+//     } else if (bpm_offset > 30) {
+//       slowCount = 0;
+//       fastCount++;
+//       if (fastCount > 4) {
+//         rand_offset = -10 - bpm_offset;
+//         console.log("JUMP DOWN");
+//       }
+//     }
+//     if (bpm_offset + rand_offset > minimum_offset && bpm_offset + rand_offset < maximum_offset) {
+//       bpm_offset += rand_offset;
+//       Tone.Transport.bpm.value += rand_offset;
+//       // if (Math.abs(bpm_offset - 20) >= 40) {
+//         //   song_counter = Math.min(song_counter + 1, songs.length - 1);
+//         //   bpm_offset = -5;
+//         //   updateSong();
+//         // }
+//       }
+//       let threshold_percentage = convert_offset_to_percentage();
+
+//       bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
+
+//       music_socket.emit('bpm-change', threshold_percentage);
+// }
+
 function updateSong() {
   if (Tone.Transport.state === "started") {
     Tone.Transport.stop();
@@ -132,6 +183,18 @@ document.getElementById("restart-music").addEventListener("click", function() {
 
 document.getElementById("start-game").addEventListener("click", function() {
 	console.log("STARTING MUSIC");
+
+  // rand_interval = random_interval();
+  // console.log("I 1: " + rand_interval);
+  // loop_interval = setInterval(update_bpm(), rand_interval);
+  // (function loop() {
+  //   rand_interval = Math.round(Math.random() * (3000 - 500)) + 500;
+  //   setTimeout(function() {
+  //           update_bpm();
+  //           loop();  
+  //   }, rand_interval);
+  // }());
+
   if (Tone.Transport.state !== 'started') {
     updateSong();
     Tone.context._context.resume();
@@ -173,9 +236,3 @@ document.getElementById("decrease-music").addEventListener("click", function() {
 
   }
 });
-
-function random_bpm_offset() {
-  let neg = (Math.random() > 0.5 ? 1 : -1);
-  let rand = (Math.round(Math.random() * random_offset_scale) + minimum_random_offset);
-  return rand * neg
-}
