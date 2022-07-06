@@ -7,6 +7,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+
 const socketio = require('socket.io');
 let server, io;
 
@@ -15,6 +16,53 @@ let server, io;
 const players = [];
 
 // -------------------------
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('view engine', 'ejs');
+
+app.get('/lobby', (req, res) => {
+	res.render('lobby.ejs');
+});
+
+app.get('/', function (req, res) {
+	res.render('landing.ejs');
+});
+
+app.get('/login', function (req, res) {
+	res.render('login.ejs');
+});
+app.get('/play', function (req, res) {
+	res.render('login.ejs');
+});
+
+// app.get('/game', function (req, res) {
+// 	res.render('index.ejs');
+// });
+
+app.get('/spectate', function (req, res) {
+	res.render('spectator.ejs', { players });
+});
+
+if(process.env.PORT==null){
+	const ssl = https.createServer(
+		{
+			key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
+			cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem'), 'utf-8'),
+		},
+		app
+	);
+	
+	ssl.listen(5000, () => {
+		console.log(`Server is active on port: ${5000}`);
+	});
+	
+	io = socketio(ssl);
+}else{
+	const http = require('http');
+	server = http.Server(app);
+	server.listen(process.env.PORT,()=>console.log(`Server is active on port: ${process.env.PORT}`))
+	io = socketio(server);
+}
 
 // --- functions ---
 
@@ -28,70 +76,19 @@ function get_rgb(value, threshold) {
 	}
 }
 
+function createPlayer(user_name, socketId) {
+	let player = {
+		username: user_name,
+		id: socketId,
+		data: 0,
+		status: 'waiting',
+	};
+	players.push(player);
+	console.log("User '" + user_name + "' connected");
+	io.emit('player-connected', player);
+}
+
 // -----------------
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.set('view engine', 'ejs');
-
-// app.get('/admin', (req, res) => {
-// 	res.render('admin.ejs');
-// });
-app.get('/lobby', (req, res) => {
-	res.render('lobby.ejs');
-});
-
-app.get('/', function (req, res) {
-	res.render('landing.ejs');
-});
-
-app.get('/login', function (req, res) {
-	res.render('login.ejs');
-});
-
-// app.get('/game', function (req, res) {
-// 	res.render('index.ejs');
-// });
-
-//temporary dummy data for viewings
-let dummy = [
-	{
-		_id: '1',
-		_name: 'Harold',
-		_rank: 3,
-	},
-	{
-		_id: '2',
-		_name: 'J0hnee',
-		_rank: 4,
-	},
-	{
-		_id: '3',
-		_name: 'Michael',
-		_rank: 0,
-	},
-	{
-		_id: '1',
-		_name: 'Harold',
-		_rank: 0,
-	},
-];
-app.get('/spectate', function (req, res) {
-	res.render('spectator.ejs', { dummy });
-});
-
-const ssl = https.createServer(
-	{
-		key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
-		cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem'), 'utf-8'),
-	},
-	app
-);
-
-ssl.listen(process.env.PORT, () => {
-	console.log(`Server is active on port: ${process.env.PORT}`);
-});
-
-io = socketio(ssl);
 
 setTimeout(() => {
 	io.sockets.emit('server-restart');
@@ -99,19 +96,22 @@ setTimeout(() => {
 
 io.sockets.on('connection', function (socket) {
 	//add the socket id to stack of objects based on id
-	socket.on('player-join', (user_name) => {
+	socket.on('availability-check', (user_name) => {
 		if (user_name.trim() != '') {
-			if (user_name == 'admin') {
-				socket.emit('redirect', '/lobby');
+			if (players != null) {
+				const index = players.findIndex((object) => {
+					return object.username === user_name;
+				});
+
+				if (index > -1) {
+					socket.emit('availability-response', false);
+				} else {
+					socket.emit('availability-response', true);
+					createPlayer(user_name, socket.id);
+				}
 			} else {
-				let player = {
-					username: user_name,
-					id: socket.id,
-					rgb: 'rgb(0, 0, 0)',
-				};
-				players.push(player);
-				console.log("User '" + user_name + "' connected");
-				io.emit('player-connected', player);
+				socket.emit('availability-response', true);
+				createPlayer(user_name, socket.id);
 			}
 		} else {
 			console.log(
@@ -119,6 +119,29 @@ io.sockets.on('connection', function (socket) {
 			);
 			socket.emit('redirect', '/');
 		}
+	});
+
+	// socket.on('login-check', () => {
+	// 	if (players != null) {
+	// 		const index = players.findIndex((object) => {
+	// 			return object.id === socket.id;
+	// 		});
+
+	// 		if (index > -1) {
+	// 			socket.emit('login-response', true);
+	// 		}
+	// 		else {
+	// 			socket.emit('login-response', false);
+	// 		}
+	// 	}
+	// 	else {
+	// 		socket.emit('login-response', false);
+	// 	}
+	// })
+
+	socket.on('server-game-start', () => {
+		console.log('server-game-start request logged');
+		io.sockets.emit('game-start');
 	});
 
 	socket.on('request-players', (data) => {
@@ -143,7 +166,26 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('status-change', (status) => {
-		io.sockets.emit('status-change', status, socket.id);
+		if (players != null) {
+			const index = players.findIndex((object) => {
+				return object.id === socket.id;
+			});
+
+			if (index > -1) {
+				players[index].status = status;
+				io.sockets.emit('status-change', players[index]);
+				console.log(
+					"'" +
+						players[index].username +
+						"' status change: " +
+						players[index].status
+				);
+			} else {
+				socket.emit('force-refresh');
+			}
+		} else {
+			socket.emit('force-refresh');
+		}
 	});
 
 	// socket.on('orientation', function (data) {

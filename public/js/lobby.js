@@ -8,11 +8,15 @@ socket.on('player-disconnected', (player) => {
 	removePlayer(player);
 });
 
-socket.on('status-change', (status, id) => {
-	if (status) {
-		const e = document.querySelector(`.${id}`).children.item(1);
-		e.innerHTML = 'Ready';
+socket.on('status-change', (data) => {
+	const e = document.getElementById(`player-${data.id}`).children.item(1);
+	e.innerHTML = data.status;
+	if (data.status == 'ready') {
 		e.style.color = 'rgb(36, 209, 134)';
+	} else if (data.status == 'eliminated') {
+		e.style.color = 'rgb(255, 0, 0)';
+	} else if (data.status == 'playing') {
+		e.style.color = 'rgb(0, 255, 0)';
 	}
 });
 
@@ -20,16 +24,18 @@ socket.on('server-restart', () => {
 	location.reload(true);
 });
 
-const startButton = document.getElementById("start-game");
+const startButton = document.getElementById('start-game');
 
-startButton.addEventListener("click", function() {
-	console.log("STARTING GAME");
+startButton.addEventListener('click', function () {
+	console.log('STARTING GAME');
+	socket.emit('server-game-start');
 });
 
 function addPlayer(player) {
 	const li = document.createElement('li');
 
-	li.classList.add('player-li', player.id);
+	li.classList.add('player-li');
+	li.id = 'player-' + player.id;
 
 	const d1 = document.createElement('div');
 	const d2 = document.createElement('div');
@@ -49,12 +55,12 @@ function addPlayer(player) {
 }
 
 function removePlayer(player) {
-	const el = document.querySelector(`.${player.id}`).children.item(1);
+	const el = document.getElementById(`player-${player.id}`).children.item(1);
 	el.innerHTML = 'Disconnected';
 	el.style.color = 'rgb(194, 72, 72)';
 
 	setTimeout(() => {
-		const e = document.querySelector(`.${player.id}`);
+		const e = document.getElementById(`player-${player.id}`);
 		e.parentElement.removeChild(e);
-	}, 3000)
+	}, 3000);
 }

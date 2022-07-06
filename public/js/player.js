@@ -13,6 +13,7 @@ let temp_acceleration;
 const background = document.getElementById('status');
 
 function getRgb(value, threshold) {
+	alert('changing colour');
 	if (value <= threshold / 2) {
 		let red = (2 * (255 * value)) / threshold;
 		return `rgb(${red}, 255, 0)`;
@@ -66,14 +67,14 @@ if (window.DeviceMotionEvent !== undefined) {
 		// total_acceleration += Math.sqrt(
 		// 	Math.pow(e.acceleration.x, 2) +
 		// 	Math.pow(e.acceleration.y, 2) +
-		// 	Math.pow(e.acceleration.z, 2) 
+		// 	Math.pow(e.acceleration.z, 2)
 		// );
 
 		//Acceleration
 		total_acceleration = Math.sqrt(
 			Math.pow(e.acceleration.x, 2) +
-			Math.pow(e.acceleration.y, 2) +
-			Math.pow(e.acceleration.z, 2) 
+				Math.pow(e.acceleration.y, 2) +
+				Math.pow(e.acceleration.z, 2)
 		);
 
 		// //Rate of change of Acceleration
@@ -116,7 +117,6 @@ if (window.DeviceMotionEvent !== undefined) {
 		hard_threshold *= bpm_change.threshold_percentage;
 		console.log(hard_threshold);
 	});
-	
 } else {
 	status.style.display = 'block';
 	status.innerHTML =
