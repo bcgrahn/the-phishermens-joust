@@ -174,12 +174,12 @@ io.sockets.on('connection', function (socket) {
 			if (index > -1) {
 				players[index].status = status;
 				io.sockets.emit('status-change', players[index]);
-				console.log(
-					"'" +
-						players[index].username +
-						"' status change: " +
-						players[index].status
-				);
+				// console.log(
+				// 	"'" +
+				// 		players[index].username +
+				// 		"' status change: " +
+				// 		players[index].status
+				// );
 			} else {
 				socket.emit('force-refresh');
 			}

@@ -15,9 +15,12 @@ socket.on('status-change', (data) => {
 	if (data.status.status == 'ready') {
 		e.style.color = 'rgb(36, 209, 134)';
 	} else if (data.status.status == 'eliminated') {
-		e.style.color = 'rgb(255, 0, 0)';
+		e.style.color = 'rgb(194, 72, 72)';
 	} else if (data.status.status == 'playing') {
 		e.style.color = data.status.colour;
+		e.innerHTML = '';
+		e.style.backgroundColor = data.status.colour;
+		e.style.width = `${50 - data.status.value * 50}%`;
 	}
 });
 
@@ -45,7 +48,7 @@ function addPlayer(player) {
 	d2.classList.add('status');
 
 	d1.innerHTML = player.username;
-	d2.innerHTML = 'Waiting';
+	d2.innerHTML = 'waiting';
 	d2.style.color = 'rgb(207, 187, 89)';
 
 	li.appendChild(d1);

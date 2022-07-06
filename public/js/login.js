@@ -166,7 +166,8 @@ if (window.DeviceMotionEvent !== undefined) {
 
 			socket.emit('status-change', {
 				status: playerStatus,
-				colour: getRgb(colour_value, soft_threshold)
+				colour: getRgb(colour_value, soft_threshold),
+                value: colour_value/soft_threshold
 			});
 
 			container.style.backgroundColor = getRgb(colour_value, soft_threshold);
