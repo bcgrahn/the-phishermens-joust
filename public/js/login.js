@@ -72,6 +72,11 @@ if (window.DeviceMotionEvent !== undefined) {
 				Math.pow(e.acceleration.z, 2)
 		);
 
+		if (total > hard_threshold) {
+			console.log("PLAYER DIED");
+			new Audio("./../audio_files/death-scream.mp3").play();
+		}
+
 		indicator_value += sensitivity * total;
 		if (indicator_value > 1) {
 			indicator_value = 1;

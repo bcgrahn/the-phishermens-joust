@@ -39,7 +39,16 @@ h1 {
 
 h2 {
     font-size: 2vmax;
-    padding: 5%;
+    padding: 2%;
+}
+
+h3 {
+    font-size: 1.5vmax;
+    padding: 3%;
+}
+
+a {
+    text-decoration: none;
 }
 
 p {
@@ -48,6 +57,9 @@ p {
 
 .container {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     flex: 1;
     width: 95vw;
     margin-bottom: 5vh;
@@ -81,57 +93,20 @@ p {
     padding: 5%;
 }
 
-.start-button {
+.button {
     font-weight: 900;
     font-size: 3vmax;
     background-color: rgb(36, 209, 134);
     border-radius: 10px;
-    
-}
-
-.music-button {
-    font-weight: 700;
-    font-size: 2vmax;
-    background-color: rgb(36, 209, 134);
-    border-radius: 10px;
-}
-
-
-.button {
-    font-weight: 900;
-    font-size: 2vmax;
-    background-color: rgb(36, 209, 134);
-    border-radius: 10px;
-    padding: 2%;
-    margin-left: 5%;
-    margin-right: 5%;
-    justify-content: center;
-    text-align: center;
+    padding: 1.5%;
+    margin-bottom: 30px;
+    margin-left: 15%;
+    margin-right: 15%;
 }
 
 .right-container {
-    display: flex;
-    flex-direction: column;
     width: 70%;
     height: 100%;
-    padding: 2%;
-    justify-content: center;
-    text-align: center;
-}
-
-.right-top-container {
-    display: flex;
-    flex-direction: column;
-    width: 70%;
-    height: 90%;
-    padding: 2%;
-}
-
-.right-bottom-container {
-    display: flex;
-    flex-direction: row;
-    width: 70%;
-    height: 120px;
     padding: 2%;
 }
 

@@ -24,6 +24,10 @@ app.get('/lobby', (req, res) => {
 });
 
 app.get('/', function (req, res) {
+	res.render('landing.ejs');
+});
+
+app.get('/login', function (req, res) {
 	res.render('login.ejs');
 });
 

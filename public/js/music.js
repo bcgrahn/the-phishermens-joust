@@ -1,10 +1,9 @@
-let bpm_offset = 0;
-const bpmelem = document.getElementById("bpm");
-bpmelem.innerText = bpm_offset;
+const pause_button = document.getElementById("pause-music");
+const bpmelem = document.getElementById("music-bpm");
 
+let bpm_offset = 0;
 let slowCount = 0;
 let fastCount = 0;
-let init_bpm;
 
 const maximum_random_offset = 35;
 const minimum_random_offset = 15;
@@ -18,7 +17,7 @@ const minimum_percentage = 0.5;
 const maximum_percentage = 2;
 const percentage_scale = maximum_percentage - minimum_percentage;
 
-let socket = io();
+let music_socket = io();
 let sendingId = document.getElementById('sending-id');
 
 function parseMidi(midi){
@@ -31,7 +30,7 @@ function parseMidi(midi){
 }
 
 function convert_offset_to_percentage() {
-  let percentage = bpm_offset - minimum_offset / (offset_range);
+  let percentage = (bpm_offset - minimum_offset) / offset_range;
   let scaled_percentage = (percentage * percentage_scale) + minimum_percentage;
   return scaled_percentage;
 }
@@ -99,8 +98,10 @@ function makeSong(midi){
         // }
       }
       let threshold_percentage = convert_offset_to_percentage();
-      bpmelem.innerText = bpm_offset;
-      socket.emit('bpm-change', {
+
+      bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
+
+      music_socket.emit('bpm-change', {
         bpm_offset: bpm_offset,
         threshold_percentage: threshold_percentage
       });
@@ -113,32 +114,71 @@ function updateSong() {
   }
   Tone.Transport.cancel();
     
-  fetch("./../midi_songs/hing-yan-au_os.json").then(response => {
+  fetch("./../audio_files/hing-yan-au_os.json").then(response => {
     return response.json();
   }).then(data => {
-    // Work with JSON data here
     
     makeSong(data);
     
   }).catch(err => {
-    // Do something for an error here
     console.error(err);
   });
 
   Tone.Transport.start();
 }
 
-document.getElementById("restart-button").addEventListener("click", function() {
+document.getElementById("restart-music").addEventListener("click", function() {
+  bpm_offset = 0;
+  updateSong();
   Tone.Transport.start(0);
 });
 
-
-document.getElementById("play-button").addEventListener("click", function() {
+document.getElementById("start-game").addEventListener("click", function() {
+	console.log("STARTING MUSIC");
   if (Tone.Transport.state !== 'started') {
     updateSong();
     Tone.context._context.resume();
+  }
+});
+
+pause_button.addEventListener("click", function() {
+  if (Tone.Transport.state !== 'started') {
+    updateSong();
+    Tone.context._context.resume();
+    pause_button.innerHTML = "Pause";
   } else {
     Tone.Transport.stop()
+    pause_button.innerHTML = "Play";
+  }
+});
+
+document.getElementById("increase-music").addEventListener("click", function() {
+  if (bpm_offset + 10 <= maximum_offset) {
+    bpm_offset += 10;
+    Tone.Transport.bpm.value += 10;
+    let threshold_percentage = convert_offset_to_percentage();
+
+    bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
+
+    music_socket.emit('bpm-change', {
+    bpm_offset: bpm_offset,
+    threshold_percentage: threshold_percentage
+    });
+  }
+});
+
+document.getElementById("decrease-music").addEventListener("click", function() {
+  if (bpm_offset - 10 >= minimum_offset) {
+    bpm_offset -= 10;
+    Tone.Transport.bpm.value -= 10;
+    let threshold_percentage = convert_offset_to_percentage();
+
+    bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
+
+    music_socket.emit('bpm-change', {
+    bpm_offset: bpm_offset,
+    threshold_percentage: threshold_percentage
+    });
   }
 });
 
