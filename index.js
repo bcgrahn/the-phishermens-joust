@@ -52,31 +52,8 @@ app.get('/login', function (req, res) {
 // 	res.render('index.ejs');
 // });
 
-//temporary dummy data for viewings
-let dummy = [
-	{
-		_id: '1',
-		_name: 'Harold',
-		_rank: 3,
-	},
-	{
-		_id: '2',
-		_name: 'J0hnee',
-		_rank: 4,
-	},
-	{
-		_id: '3',
-		_name: 'Michael',
-		_rank: 0,
-	},
-	{
-		_id: '1',
-		_name: 'Harold',
-		_rank: 0,
-	},
-];
 app.get('/spectate', function (req, res) {
-	res.render('spectator.ejs', { dummy });
+	res.render('spectator.ejs', { players });
 });
 
 const ssl = https.createServer(
