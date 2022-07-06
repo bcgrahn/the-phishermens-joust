@@ -7,6 +7,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+
 const socketio = require('socket.io');
 let server, io;
 
@@ -56,19 +57,26 @@ app.get('/spectate', function (req, res) {
 	res.render('spectator.ejs', { players });
 });
 
-const ssl = https.createServer(
-	{
-		key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
-		cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem'), 'utf-8'),
-	},
-	app
-);
-
-ssl.listen(process.env.PORT, () => {
-	console.log(`Server is active on port: ${process.env.PORT}`);
-});
-
-io = socketio(ssl);
+if(process.env.PORT==null){
+	const ssl = https.createServer(
+		{
+			key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
+			cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem'), 'utf-8'),
+		},
+		app
+	);
+	
+	ssl.listen(5000, () => {
+		console.log(`Server is active on port: ${5000}`);
+	});
+	
+	io = socketio(ssl);
+}else{
+	const http = require('http');
+	server = http.Server(app);
+	server.listen(process.env.PORT,()=>console.log(`Server is active on port: ${process.env.PORT}`))
+	io = socketio(server);
+}
 
 setTimeout(() => {
 	io.sockets.emit('server-restart');
