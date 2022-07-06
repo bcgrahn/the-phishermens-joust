@@ -29,7 +29,7 @@ header {
     padding: 1vmax;
     margin-top: 5vh;
     margin-bottom: 5vh;
-    border: 10px solid rgb(36, 209, 134);
+    border: 5px solid rgb(36, 209, 134);
     border-radius: 20px;
 }
 
@@ -51,7 +51,7 @@ p {
     flex: 1;
     width: 95vw;
     margin-bottom: 5vh;
-    border: 10px solid rgb(36, 209, 134);
+    border: 5px solid rgb(36, 209, 134);
     border-radius: 20px;
 }
 

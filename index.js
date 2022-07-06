@@ -7,6 +7,7 @@ const ejs = require('ejs');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+
 const socketio = require('socket.io');
 let server, io;
 
@@ -38,46 +39,30 @@ app.get('/play', function (req, res) {
 // 	res.render('index.ejs');
 // });
 
-//temporary dummy data for viewings
-let dummy = [
-	{
-		_id: '1',
-		_name: 'Harold',
-		_rank: 3,
-	},
-	{
-		_id: '2',
-		_name: 'J0hnee',
-		_rank: 4,
-	},
-	{
-		_id: '3',
-		_name: 'Michael',
-		_rank: 0,
-	},
-	{
-		_id: '1',
-		_name: 'Harold',
-		_rank: 0,
-	},
-];
 app.get('/spectate', function (req, res) {
-	res.render('spectator.ejs', { dummy });
+	res.render('spectator.ejs', { players });
 });
 
-const ssl = https.createServer(
-	{
-		key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
-		cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem'), 'utf-8'),
-	},
-	app
-);
-
-ssl.listen(process.env.PORT, () => {
-	console.log(`Server is active on port: ${process.env.PORT}`);
-});
-
-io = socketio(ssl);
+if(process.env.PORT==null){
+	const ssl = https.createServer(
+		{
+			key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
+			cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem'), 'utf-8'),
+		},
+		app
+	);
+	
+	ssl.listen(5000, () => {
+		console.log(`Server is active on port: ${5000}`);
+	});
+	
+	io = socketio(ssl);
+}else{
+	const http = require('http');
+	server = http.Server(app);
+	server.listen(process.env.PORT,()=>console.log(`Server is active on port: ${process.env.PORT}`))
+	io = socketio(server);
+}
 
 // --- functions ---
 
