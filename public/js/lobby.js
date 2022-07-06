@@ -18,9 +18,9 @@ socket.on('status-change', (data) => {
 		e.style.color = 'rgb(194, 72, 72)';
 	} else if (data.status.status == 'playing') {
 		e.style.color = data.status.colour;
-		e.innerHTML = '';
-		e.style.backgroundColor = data.status.colour;
-		e.style.width = `${50 - data.status.value * 50}%`;
+		// e.innerHTML = '';
+		// e.style.backgroundColor = data.status.colour;
+		// e.style.width = `${50 - data.status.value * 50}%`;
 	}
 });
 
