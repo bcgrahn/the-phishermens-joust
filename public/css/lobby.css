@@ -25,6 +25,7 @@ header {
     width: 95vw;
     display: flex;
     justify-content: center;
+    text-align: center;
     padding: 1vmax;
     margin-top: 5vh;
     margin-bottom: 5vh;
