@@ -9,10 +9,15 @@ socket.on('player-disconnected', (player) => {
 });
 
 socket.on('status-change', (data) => {
-	if (data.status == 'ready') {
-		const e = document.getElementById(`player-${data.id}`).children.item(1);
-		e.innerHTML = 'Ready';
+	const e = document.getElementById(`player-${data.id}`).children.item(1);
+	e.innerHTML = data.status.status;
+
+	if (data.status.status == 'ready') {
 		e.style.color = 'rgb(36, 209, 134)';
+	} else if (data.status.status == 'eliminated') {
+		e.style.color = 'rgb(255, 0, 0)';
+	} else if (data.status.status == 'playing') {
+		e.style.color = data.status.colour;
 	}
 });
 
