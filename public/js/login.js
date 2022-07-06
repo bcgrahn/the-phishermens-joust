@@ -90,11 +90,6 @@ if (window.DeviceMotionEvent !== undefined) {
 					Math.pow(e.acceleration.z, 2)
 			);
 
-			if (total > hard_threshold) {
-				console.log('PLAYER DIED');
-				new Audio('./../audio_files/death-scream.mp3').play();
-			}
-
 			indicator_value += sensitivity * total;
 			if (indicator_value > 1) {
 				indicator_value = 1;
@@ -120,13 +115,13 @@ if (window.DeviceMotionEvent !== undefined) {
 				150 * indicator_value + 50
 			}% at 50% 150%)`;
 		} else if (playerStatus == 'playing') {
-			// alert('game motion detected');
+			
 			let total_acceleration = Math.sqrt(
 				Math.pow(e.acceleration.x, 2) +
 					Math.pow(e.acceleration.y, 2) +
 					Math.pow(e.acceleration.z, 2)
 			);
-			// alert('2');
+
 			// //Rate of change of Acceleration
 			// temp_acceleration = Math.sqrt(
 			// 	Math.pow(e.acceleration.x, 2) +
@@ -137,22 +132,29 @@ if (window.DeviceMotionEvent !== undefined) {
 			// prev_acceleration = temp_acceleration;
 
 			colour_value += sensitivity * total_acceleration;
-			// alert('3');
+
 			if (
 				colour_value > soft_threshold ||
 				total_acceleration > hard_threshold
 			) {
 				colour_value = soft_threshold;
 				game_over = true;
+
+				console.log('PLAYER DIED');
+				new Audio('./../audio_files/game_over.mp3').play();
+
+				playerStatus = "eliminated";
+
+				container.innerHTML = "You are out :( Better luck next time!"
+
+				socket.emit('status-change', playerStatus);
 			}
-			// alert('4');
-			// socket.emit('information', colour_value);
 
-			container.style.backgroundColor = getRgb(colour_value, soft_threshold);;
-
-			// container.style.backgroundColor = getRgb(colour_value, soft_threshold);
+			container.style.backgroundColor = getRgb(colour_value, soft_threshold);
 
 			if (game_over && !alerted) {
+				
+				
 				game_over = false;
 				alerted = true;
 				setTimeout(() => {
@@ -168,82 +170,15 @@ if (window.DeviceMotionEvent !== undefined) {
 				rgb: getRgb(colour_value, soft_threshold),
 			});
 
+			//BPM CHANGES
 			socket.on('bpm-change', (bpm_change) => {
 				hard_threshold *= bpm_change.threshold_percentage;
 				console.log(hard_threshold);
 			});
+
 		} else {
 			return;
 		}
 	};
 }
 
-// DeviceMotionEvent.requestPermission()
-// 	.then((response) => {
-// 		if (response == 'granted') {
-// 			window.addEventListener('devicemotion', (e) => {
-// 				// do something with e
-// 			});
-// 		}
-// 	})
-// 	.catch(console.error);
-
-// if (window.DeviceMotionEvent !== undefined) {
-// 	window.ondevicemotion = function (e) {
-// 		if (playerStatus != 'playing') return false;
-
-// 		// //Velocity
-// 		// total_acceleration += Math.sqrt(
-// 		// 	Math.pow(e.acceleration.x, 2) +
-// 		// 	Math.pow(e.acceleration.y, 2) +
-// 		// 	Math.pow(e.acceleration.z, 2)
-// 		// );
-
-// 		//Acceleration
-// 		total_acceleration = Math.sqrt(
-// 			Math.pow(e.acceleration.x, 2) +
-// 				Math.pow(e.acceleration.y, 2) +
-// 				Math.pow(e.acceleration.z, 2)
-// 		);
-
-// 		// //Rate of change of Acceleration
-// 		// temp_acceleration = Math.sqrt(
-// 		// 	Math.pow(e.acceleration.x, 2) +
-// 		// 	Math.pow(e.acceleration.y, 2) +
-// 		// 	Math.pow(e.acceleration.z, 2)
-// 		// );
-// 		// total_acceleration = prev_acceleration - temp_acceleration;
-// 		// prev_acceleration = temp_acceleration;
-
-// 		colour_value += sensitivity * total_acceleration;
-
-// 		if (colour_value > soft_threshold || total_acceleration > hard_threshold) {
-// 			colour_value = soft_threshold;
-// 			game_over = true;
-// 			socket.emit('status-change', true);
-// 		}
-
-// 		background.style.backgroundColor = getRgb(colour_value, soft_threshold);
-
-// 		if (game_over && !alerted) {
-// 			game_over = false;
-// 			alerted = true;
-// 			setTimeout(() => {
-// 				alert('You lose :(');
-// 			}, 100);
-// 			setTimeout(() => {
-// 				alerted = false;
-// 			}, 3000);
-// 		}
-
-// 		socket.emit('motion', {
-// 			sender: sendingId.value,
-// 			rgb: getRgb(colour_value, soft_threshold),
-// 		});
-// 	};
-
-// 	socket.on('bpm-change', (bpm_change) => {
-// 		hard_threshold *= bpm_change.threshold_percentage;
-// 		console.log(hard_threshold);
-// 	});
-// }

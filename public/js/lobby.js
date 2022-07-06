@@ -9,10 +9,12 @@ socket.on('player-disconnected', (player) => {
 });
 
 socket.on('status-change', (data) => {
+	const e = document.getElementById(`player-${data.id}`).children.item(1);
+	e.innerHTML = data.status;
 	if (data.status == 'ready') {
-		const e = document.getElementById(`player-${data.id}`).children.item(1);
-		e.innerHTML = 'Ready';
 		e.style.color = 'rgb(36, 209, 134)';
+	} else if (data.status = 'eliminated') {
+		e.style.color = 'rgb(255, 0, 0)';
 	}
 });
 
