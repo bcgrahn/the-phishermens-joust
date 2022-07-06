@@ -88,9 +88,10 @@ function makeSong(midi){
           synths[i].triggerAttackRelease(value.name, value.duration, time, value.velocity)
       },midi.tracks[i].notes).start()                  
   }
+}
 
-  Tone.Transport.scheduleRepeat(function(time){
-    let rand_offset = random_bpm_offset();
+function update_bpm() {
+  let rand_offset = random_bpm_offset();
     if (bpm_offset < 15) {
       fastCount = 0;
       slowCount++;
@@ -120,41 +121,7 @@ function makeSong(midi){
       bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
 
       music_socket.emit('bpm-change', threshold_percentage);
-  }, "9");
 }
-
-// function update_bpm() {
-//   let rand_offset = random_bpm_offset();
-//     if (bpm_offset < 15) {
-//       fastCount = 0;
-//       slowCount++;
-//       if (slowCount > 2) {
-//         rand_offset = 50 - bpm_offset;
-//         console.log("JUMP UP");
-//       }
-//     } else if (bpm_offset > 30) {
-//       slowCount = 0;
-//       fastCount++;
-//       if (fastCount > 4) {
-//         rand_offset = -10 - bpm_offset;
-//         console.log("JUMP DOWN");
-//       }
-//     }
-//     if (bpm_offset + rand_offset > minimum_offset && bpm_offset + rand_offset < maximum_offset) {
-//       bpm_offset += rand_offset;
-//       Tone.Transport.bpm.value += rand_offset;
-//       // if (Math.abs(bpm_offset - 20) >= 40) {
-//         //   song_counter = Math.min(song_counter + 1, songs.length - 1);
-//         //   bpm_offset = -5;
-//         //   updateSong();
-//         // }
-//       }
-//       let threshold_percentage = convert_offset_to_percentage();
-
-//       bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
-
-//       music_socket.emit('bpm-change', threshold_percentage);
-// }
 
 function updateSong() {
   if (Tone.Transport.state === "started") {
@@ -184,16 +151,14 @@ document.getElementById("restart-music").addEventListener("click", function() {
 document.getElementById("start-game").addEventListener("click", function() {
 	console.log("STARTING MUSIC");
 
-  // rand_interval = random_interval();
-  // console.log("I 1: " + rand_interval);
-  // loop_interval = setInterval(update_bpm(), rand_interval);
-  // (function loop() {
-  //   rand_interval = Math.round(Math.random() * (3000 - 500)) + 500;
-  //   setTimeout(function() {
-  //           update_bpm();
-  //           loop();  
-  //   }, rand_interval);
-  // }());
+  (function loop() {
+    rand_interval = random_interval();
+    console.log("I 1: " + rand_interval);
+    setTimeout(function() {
+      update_bpm();
+      loop();  
+    }, rand_interval);
+  }());
 
   if (Tone.Transport.state !== 'started') {
     updateSong();
