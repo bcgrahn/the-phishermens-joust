@@ -61,7 +61,7 @@ socket.on('game-start', () => {
 		}, 10);
 	} else {
 		alert("You weren't ready'");
-		window.location.href = "/spectate";
+		window.location = "/spectate";
 	}
 });
 
