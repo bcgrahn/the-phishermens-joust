@@ -145,9 +145,9 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on('bpm-change', (bpmchange) => {
-		console.log('bpm-change request logged');
-		io.sockets.emit('bpm-change', bpmchange);
-	});
+        console.log('bpm-change request logged');
+        io.sockets.emit('bpm-change', bpmchange);
+    });
 
 	socket.on('request-players', (data) => {
 		socket.emit('player-load', players);

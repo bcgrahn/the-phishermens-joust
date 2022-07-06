@@ -13,8 +13,8 @@ const minimum_offset = -25;
 const maximum_offset = 85;
 const offset_range = maximum_offset - minimum_offset;
 
-const minimum_percentage = 0.5;
-const maximum_percentage = 2;
+const minimum_percentage = 0.66;
+const maximum_percentage = 1.33;
 const percentage_scale = maximum_percentage - minimum_percentage;
 
 let music_socket = io();
@@ -101,10 +101,7 @@ function makeSong(midi){
 
       bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
 
-      music_socket.emit('bpm-change', {
-        bpm_offset: bpm_offset,
-        threshold_percentage: threshold_percentage
-      });
+      music_socket.emit('bpm-change', threshold_percentage);
   }, "9");
 }
 
@@ -160,10 +157,7 @@ document.getElementById("increase-music").addEventListener("click", function() {
 
     bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
 
-    music_socket.emit('bpm-change', {
-    bpm_offset: bpm_offset,
-    threshold_percentage: threshold_percentage
-    });
+    music_socket.emit('bpm-change', threshold_percentage);
   }
 });
 
@@ -175,10 +169,8 @@ document.getElementById("decrease-music").addEventListener("click", function() {
 
     bpmelem.innerText = "Music Speed: " + String(Math.round(100 * threshold_percentage)) + "%";
 
-    music_socket.emit('bpm-change', {
-    bpm_offset: bpm_offset,
-    threshold_percentage: threshold_percentage
-    });
+    music_socket.emit('bpm-change', threshold_percentage);
+
   }
 });
 
