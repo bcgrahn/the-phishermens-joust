@@ -111,9 +111,9 @@ if (window.DeviceMotionEvent !== undefined) {
 				heading.innerHTML = 'Ready';
 				heading.style.color = 'rgb(36, 209, 134)';
 
-				if (!document.fullscreenElement) {
-					document.documentElement.requestFullscreen();
-				}
+				// if (!document.fullscreenElement) {
+				// 	document.documentElement.requestFullscreen();
+				// }
 				motionTracking = false;
 				playerStatus = 'ready';
 
