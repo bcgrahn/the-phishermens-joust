@@ -18,6 +18,8 @@ const container = document.getElementById('colour-block');
 button.addEventListener('click', (e) => {
 	const sendingId = document.querySelector('.username-input');
 	socket.emit('availability-check', sendingId.value);
+	document.getElementById('container_details').removeChild(document.getElementsByTagName('input')[0])
+	document.getElementById('container_details').removeChild(document.getElementsByClassName('button-input')[0])
 });
 
 function getRgb(value, threshold) {
