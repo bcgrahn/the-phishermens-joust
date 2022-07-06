@@ -111,7 +111,7 @@ function updateSong() {
   }
   Tone.Transport.cancel();
     
-  fetch("./../audio_files/hing-yan-au_os.json").then(response => {
+  fetch("./audio_files/hips_dont_lie.json").then(response => {
     return response.json();
   }).then(data => {
     
