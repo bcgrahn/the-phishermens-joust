@@ -95,9 +95,42 @@ p {
     border-radius: 10px;
 }
 
+
+.button {
+    font-weight: 900;
+    font-size: 2vmax;
+    background-color: rgb(36, 209, 134);
+    border-radius: 10px;
+    padding: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
+    justify-content: center;
+    text-align: center;
+}
+
 .right-container {
+    display: flex;
+    flex-direction: column;
     width: 70%;
     height: 100%;
+    padding: 2%;
+    justify-content: center;
+    text-align: center;
+}
+
+.right-top-container {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    height: 90%;
+    padding: 2%;
+}
+
+.right-bottom-container {
+    display: flex;
+    flex-direction: row;
+    width: 70%;
+    height: 120px;
     padding: 2%;
 }
 

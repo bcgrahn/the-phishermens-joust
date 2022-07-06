@@ -145,10 +145,10 @@ pause_button.addEventListener("click", function() {
   if (Tone.Transport.state !== 'started') {
     updateSong();
     Tone.context._context.resume();
-    pause_button.innerHTML = "Pause Music";
+    pause_button.innerHTML = "Pause";
   } else {
     Tone.Transport.stop()
-    pause_button.innerHTML = "Play Music";
+    pause_button.innerHTML = "Play";
   }
 });
 
