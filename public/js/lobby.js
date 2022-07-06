@@ -9,7 +9,7 @@ socket.on('player-disconnected', (player) => {
 });
 
 socket.on('status-change', (status, id) => {
-	if (status) {
+	if (status == 'ready') {
 		const e = document.querySelector(`.${id}`).children.item(1);
 		e.innerHTML = 'Ready';
 		e.style.color = 'rgb(36, 209, 134)';
