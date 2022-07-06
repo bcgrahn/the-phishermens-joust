@@ -3,7 +3,7 @@ const indicator = document.querySelector('.indicator-sheet');
 
 let indicator_value = 0;
 let soft_threshold = 2;
-let hard_threshold = 50;
+let hard_threshold = 35;
 const sensitivity = 0.002;
 let cooldown = 0.005 * soft_threshold;
 let motionTracking = false;

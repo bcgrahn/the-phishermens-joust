@@ -1,3 +1,5 @@
+const game_music = "hing-yan-au_os";
+
 const pause_button = document.getElementById("pause-music");
 const bpmelem = document.getElementById("music-bpm");
 
@@ -129,7 +131,7 @@ function updateSong() {
   }
   Tone.Transport.cancel();
     
-  fetch("./../audio_files/hing-yan-au_os.json").then(response => {
+  fetch("./../audio_files/" + game_music + ".json").then(response => {
     return response.json();
   }).then(data => {
     
