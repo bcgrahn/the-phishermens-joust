@@ -20,7 +20,11 @@ socket.on('server-restart', () => {
 	location.reload(true);
 });
 
-const startButton = document.querySelector('.start-button');
+const startButton = document.getElementById("start-game");
+
+startButton.addEventListener("click", function() {
+	console.log("STARTING GAME");
+});
 
 function addPlayer(player) {
 	const li = document.createElement('li');

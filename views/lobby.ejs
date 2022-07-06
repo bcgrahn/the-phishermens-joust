@@ -18,9 +18,33 @@
                 <img src="../images/qrcode.png" alt="qrcode" class="qrcode">
             </div>
             <div class="url"><p>url: https://192.168.1.143:5000</p></div>
-            <div class="start-button">
-                Start
+
+            <div class="start-button" id="start-game">
+                Start Game
             </div>
+
+            <div>&nbsp</div>
+
+            <div class="start-button" id="pause-music">
+                Pause Music
+            </div>
+
+            <div>&nbsp</div>
+
+            <div class="start-button" id="restart-music">
+                Restart Music
+            </div>
+
+            <div id="music-bpm">Music Speed: 100%</div>
+
+            <div class="music-button" id="increase-music">
+                Speed-up
+            </div>
+
+            <div class="music-button" id="decrease-music">
+                Slow-down
+            </div>
+
         </div>
         <div class="right-container">
             <ul class="player-ul">
@@ -34,4 +58,11 @@
 </body>
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/lobby.js"></script>
+
+<!-- MUSIC SCRIPTS -->
+<script src="/lib/Tone.min.js"></script>
+<script src="/js/music.js"></script>
+<!-- END MUSIC SCRIPTS -->
+
 </html>
+
