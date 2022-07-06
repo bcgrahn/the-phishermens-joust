@@ -30,6 +30,9 @@ app.get('/', function (req, res) {
 app.get('/login', function (req, res) {
 	res.render('login.ejs');
 });
+app.get('/play', function (req, res) {
+	res.render('login.ejs');
+});
 
 // app.get('/game', function (req, res) {
 // 	res.render('index.ejs');
@@ -150,6 +153,11 @@ io.sockets.on('connection', function (socket) {
 	// 		socket.emit('login-response', false);
 	// 	}
 	// })
+
+	socket.on('server-game-start', () => {
+		console.log('server-game-start request logged');
+		io.sockets.emit('game-start');
+	});
 
 	socket.on('request-players', (data) => {
 		socket.emit('player-load', players);
