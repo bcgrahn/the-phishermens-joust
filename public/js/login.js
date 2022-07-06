@@ -2,10 +2,10 @@ const button = document.querySelector('.button-input');
 const indicator = document.querySelector('.indicator-sheet');
 
 let indicator_value = 0;
-let soft_threshold = 5;
+let soft_threshold = 2;
 let hard_threshold = 50;
 const sensitivity = 0.002;
-let cooldown = 0.0005 * soft_threshold;
+let cooldown = 0.005 * soft_threshold;
 let motionTracking = false;
 let playerStatus = '';
 let colour_value = 0;
@@ -40,6 +40,12 @@ function getRgb(value, threshold) {
 //     }
 // })
 
+//BPM CHANGES
+socket.on('bpm-change', function(threshold_percentage) {
+	hard_threshold *= threshold_percentage;
+	soft_threshold *= threshold_percentage;
+});
+
 socket.on('force-refresh', () => {
 	location.reload(true);
 });
@@ -53,7 +59,7 @@ socket.on('game-start', () => {
 			colour: getRgb(colour_value, soft_threshold)
 		});
 
-		cooldown = 0.0005 * soft_threshold;
+		cooldown = 0.005 * soft_threshold;
 		container.innerHTML = '';
 		setInterval(() => {
 			colour_value -= cooldown;
@@ -168,7 +174,8 @@ if (window.DeviceMotionEvent !== undefined) {
 
 			socket.emit('status-change', {
 				status: playerStatus,
-				colour: getRgb(colour_value, soft_threshold)
+				colour: getRgb(colour_value, soft_threshold),
+                value: colour_value/soft_threshold
 			});
 
 			container.style.backgroundColor = getRgb(colour_value, soft_threshold);
@@ -189,12 +196,6 @@ if (window.DeviceMotionEvent !== undefined) {
 			socket.emit('motion', {
 				sender: sendingId.value,
 				rgb: getRgb(colour_value, soft_threshold),
-			});
-
-			//BPM CHANGES
-			socket.on('bpm-change', (bpm_change) => {
-				hard_threshold *= bpm_change.threshold_percentage;
-				console.log(hard_threshold);
 			});
 
 		} else {
