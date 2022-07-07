@@ -133,6 +133,10 @@ io.sockets.on('connection', function (socket) {
 		io.sockets.emit('game-start');
 	});
 
+	socket.on('server-game-restart', () => {
+		io.sockets.emit('force-refresh');
+	});
+
 	socket.on('bpm-change', (bpmchange) => {
 		// console.log('bpm-change request logged');
 		io.sockets.emit('bpm-change', bpmchange);
