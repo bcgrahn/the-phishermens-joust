@@ -18,8 +18,15 @@
                 <span>Player</span>
             </header>
             <section id="leaderboard">
-                <ol id="list_in">
-                    
+                <ol id="list_out">
+                    <% players.forEach(obj=>{ %>
+                        <% if(obj.status.status == 'eliminated') {%>
+                            <li class="out" id = <%= "player-"+obj.id %>>
+                                <span><%= obj.status.status %></span>
+                                <span><%= obj.username %></span>
+                            </li>
+                        <% }%>  
+                    <% }) %> 
                 </ol>
             </section>
         </section>
@@ -30,8 +37,15 @@
                 <span>Player</span>
             </header>
             <section id="playing">
-                <ol id="list_out">
-                    
+                <ol id="list_in">
+                    <% players.forEach(obj=>{ %>
+                        <% if(obj.status.status !== 'eliminated') {%>
+                            <li class="in" id = <%= "player-"+obj.id %>>
+                                <span><%= obj.status.status || "waiting" %></span>
+                                <span><%= obj.username %></span>
+                            </li>
+                        <% }%>  
+                    <% }) %> 
                 </ol>
             </section>
         </section>

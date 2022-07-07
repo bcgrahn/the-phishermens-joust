@@ -34,7 +34,7 @@ socket.on('player-connected', (player) => {
     let list_item = document.createElement('li');
     list_item.className = player.status.toLowerCase() !== 'eliminated' ? 'in' : 'out';
     list_item.id = 'player-' + player.id;
-    console.log(list_item.className)
+
     let s_status = document.createElement('span');
     let s_username = document.createElement('span');
     s_status.innerText = player.status;
@@ -51,3 +51,7 @@ socket.on('player-connected', (player) => {
      *      span-username
      */
 });
+
+socket.on('player-disconnected',()=>{
+    window.location.reload(true);
+})
