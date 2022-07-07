@@ -31,8 +31,14 @@ app.get('/', function (req, res) {
 app.get('/login', function (req, res) {
 	res.render('login.ejs');
 });
-app.get('/play', function (req, res) {
-	res.render('login.ejs');
+app.get('/game', function (req, res) {
+	const username = req.query.username;
+	if (username != null && username.trim() != '') {
+		res.render('game.ejs', {username: username});
+	} else {
+		res.redirect('/login');
+	}
+
 });
 
 // app.get('/game', function (req, res) {
@@ -97,7 +103,6 @@ setTimeout(() => {
 }, 1000);
 
 io.sockets.on('connection', function (socket) {
-	//add the socket id to stack of objects based on id
 	socket.on('availability-check', (user_name) => {
 		if (user_name.trim() != '') {
 			if (players != null) {
@@ -122,24 +127,6 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('redirect', '/');
 		}
 	});
-
-	// socket.on('login-check', () => {
-	// 	if (players != null) {
-	// 		const index = players.findIndex((object) => {
-	// 			return object.id === socket.id;
-	// 		});
-
-	// 		if (index > -1) {
-	// 			socket.emit('login-response', true);
-	// 		}
-	// 		else {
-	// 			socket.emit('login-response', false);
-	// 		}
-	// 	}
-	// 	else {
-	// 		socket.emit('login-response', false);
-	// 	}
-	// })
 
 	socket.on('server-game-start', () => {
 		// console.log('server-game-start request logged');
@@ -168,16 +155,25 @@ io.sockets.on('connection', function (socket) {
 		});
 		if (players[index] != null) {
 			players[index].rgb = rgb;
-			if (rgb == 'rgb(255, 0, 0)') {
-				console.log(players[index].username + ' eliminated.');
-			}
 		}
 
 		io.sockets.emit('motion-update', players[index]);
 	});
 
+	socket.on('remaining-count', (remainingCount) => {
+		io.sockets.emit('remaining-count', remainingCount);
+	});
+
 	socket.on('player-change', (readyCount, totalCount) => {
 		io.sockets.emit('player-change', readyCount, totalCount);
+	});
+
+	socket.on('end-of-game', () => {
+		io.sockets.emit('end-of-game');
+	});
+
+	socket.on('winner-found', (username) => {
+		io.sockets.emit('winner-found', username);
 	});
 
 	socket.on('status-change', (status) => {
@@ -189,12 +185,6 @@ io.sockets.on('connection', function (socket) {
 			if (index > -1) {
 				players[index].status = status;
 				io.sockets.emit('status-change', players[index]);
-				// console.log(
-				// 	"'" +
-				// 		players[index].username +
-				// 		"' status change: " +
-				// 		players[index].status
-				// );
 			} else {
 				socket.emit('force-refresh');
 			}
