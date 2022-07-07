@@ -43,7 +43,7 @@ app.get('/spectate', function (req, res) {
 	res.render('spectator.ejs', { players });
 });
 
-if(process.env.PORT==null){
+if (process.env.PORT == null) {
 	const ssl = https.createServer(
 		{
 			key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
@@ -51,16 +51,18 @@ if(process.env.PORT==null){
 		},
 		app
 	);
-	
+
 	ssl.listen(5000, () => {
 		console.log(`Server is active on port: ${5000}`);
 	});
-	
+
 	io = socketio(ssl);
-}else{
+} else {
 	const http = require('http');
 	server = http.Server(app);
-	server.listen(process.env.PORT,()=>console.log(`Server is active on port: ${process.env.PORT}`))
+	server.listen(process.env.PORT, () =>
+		console.log(`Server is active on port: ${process.env.PORT}`)
+	);
 	io = socketio(server);
 }
 
@@ -140,14 +142,14 @@ io.sockets.on('connection', function (socket) {
 	// })
 
 	socket.on('server-game-start', () => {
-		console.log('server-game-start request logged');
+		// console.log('server-game-start request logged');
 		io.sockets.emit('game-start');
 	});
 
 	socket.on('bpm-change', (bpmchange) => {
-        console.log('bpm-change request logged');
-        io.sockets.emit('bpm-change', bpmchange);
-    });
+		// console.log('bpm-change request logged');
+		io.sockets.emit('bpm-change', bpmchange);
+	});
 
 	socket.on('request-players', (data) => {
 		socket.emit('player-load', players);
@@ -168,6 +170,10 @@ io.sockets.on('connection', function (socket) {
 		}
 
 		io.sockets.emit('motion-update', players[index]);
+	});
+
+	socket.on('player-change', (readyCount, totalCount) => {
+		io.sockets.emit('player-change', readyCount, totalCount);
 	});
 
 	socket.on('status-change', (status) => {
