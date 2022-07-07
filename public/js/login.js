@@ -3,10 +3,10 @@ const indicator = document.querySelector('.indicator-sheet');
 const heading = document.querySelector('h1');
 const container = document.getElementById('colour-block');
 
-const sensitivity = 0.002;
+const sensitivity = 0.003;
 let indicator_value = 0;
 let soft_threshold = 2;
-let hard_threshold = 35;
+let hard_threshold = 25;
 let cooldown = 0.005 * soft_threshold;
 let playerStatus = '';
 let colour_value = 0;
@@ -105,7 +105,7 @@ socket.on('winner-found', (username) => {
 
 //BPM CHANGES
 socket.on('bpm-change', function (threshold_percentage) {
-	hard_threshold *= threshold_percentage;
+	// hard_threshold *= threshold_percentage;
 	soft_threshold *= threshold_percentage;
 });
 
