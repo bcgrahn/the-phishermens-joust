@@ -2,6 +2,23 @@ let socket = io();
 
 let readyCount = 0;
 let totalCount = 0;
+let remainingCount = 0;
+
+function eliminationLogic() {
+	remainingCount--;
+	socket.emit('remaining-count', remainingCount);
+}
+
+function isEnd() {
+	if (remainingCount <= 1) {
+		socket.emit('end-of-game');
+	}
+}
+
+socket.on('winner-found', (username) => {
+	const heading = document.querySelector('h1');
+	heading.innerHTML = username;
+});
 
 socket.on('player-connected', (player) => {
 	addPlayer(player);
@@ -21,7 +38,9 @@ socket.on('status-change', (player) => {
 
 		socket.emit('player-change', readyCount, totalCount);
 	} else if (player.status.status == 'eliminated') {
+		eliminationLogic();
 		e.style.color = 'rgb(194, 72, 72)';
+		isEnd();
 	} else if (player.status.status == 'playing') {
 		e.style.color = player.status.colour;
 		// e.innerHTML = '';
@@ -37,8 +56,9 @@ socket.on('server-restart', () => {
 const startButton = document.getElementById('start-game');
 
 startButton.addEventListener('click', function () {
-	console.log('STARTING GAME');
+	remainingCount = readyCount;
 	socket.emit('server-game-start');
+	socket.emit('remaining-count', remainingCount);
 });
 
 function addPlayer(player) {
@@ -79,7 +99,12 @@ function removePlayer(player) {
 		readyCount -= 1;
 	}
 
+	if (player.status.status == 'playing') {
+		eliminationLogic();
+	}
+
 	socket.emit('player-change', readyCount, totalCount);
+	isEnd();
 
 	setTimeout(() => {
 		const e = document.getElementById(`player-${player.id}`);
