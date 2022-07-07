@@ -31,8 +31,14 @@ app.get('/', function (req, res) {
 app.get('/login', function (req, res) {
 	res.render('login.ejs');
 });
-app.get('/play', function (req, res) {
-	res.render('login.ejs');
+app.get('/game', function (req, res) {
+	const username = req.query.username;
+	if (username != null && username.trim() != '') {
+		res.render('game.ejs', {username: username});
+	} else {
+		res.redirect('/login');
+	}
+
 });
 
 // app.get('/game', function (req, res) {
