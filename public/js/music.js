@@ -161,7 +161,7 @@ function updateSong() {
   }
   Tone.Transport.cancel();
     
-  fetch("./../audio_files/" + game_music + ".json").then(response => {
+  fetch("audio_files/" + game_music + ".json").then(response => {
     return response.json();
   }).then(data => {
     
