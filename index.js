@@ -35,6 +35,10 @@ app.get('/play', function (req, res) {
 	res.render('login.ejs');
 });
 
+app.get('/winner', function (req, res) {
+	res.render('winner.ejs');
+});
+
 // app.get('/game', function (req, res) {
 // 	res.render('index.ejs');
 // });
@@ -164,6 +168,13 @@ io.sockets.on('connection', function (socket) {
 
 	socket.on('winner-found', (username) => {
 		io.sockets.emit('winner-found', username);
+	});
+
+	socket.on('display-winner', (username) => {
+		console.log('display winner logged: ' + username);
+		setTimeout(() => {
+			io.sockets.emit('display-winner', username);
+		}, 3000);
 	});
 
 	socket.on('status-change', (status) => {

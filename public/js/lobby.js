@@ -16,8 +16,11 @@ function isEnd() {
 }
 
 socket.on('winner-found', (username) => {
-	const heading = document.querySelector('h1');
-	heading.innerHTML = username;
+	// const heading = document.querySelector('h1');
+	// heading.innerHTML = username;
+	socket.emit('display-winner', username);
+
+	window.location = '/winner';
 });
 
 socket.on('player-connected', (player) => {
@@ -56,9 +59,17 @@ socket.on('server-restart', () => {
 const startButton = document.getElementById('start-game');
 
 startButton.addEventListener('click', function () {
-	remainingCount = readyCount;
-	socket.emit('server-game-start');
-	socket.emit('remaining-count', remainingCount);
+	if (readyCount > 1) {
+		remainingCount = readyCount;
+		socket.emit('server-game-start');
+		socket.emit('remaining-count', remainingCount);
+	} else {
+		const heading = document.querySelector('h1');
+		heading.innerHTML = 'Not enough players ready';
+		setTimeout(() => {
+			heading.innerHTML = "The Phisherman's Joust";
+		}, 3000);
+	}
 });
 
 function addPlayer(player) {

@@ -101,7 +101,6 @@ h2 {
     align-items: center;
     text-align: center;
     border: 5px solid rgb(36, 209, 134);
-    border-radius: 20px;
     background-color: rgb(36, 209, 134);
 
     clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);

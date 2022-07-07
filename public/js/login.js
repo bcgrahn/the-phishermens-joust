@@ -8,7 +8,6 @@ let indicator_value = 0;
 let soft_threshold = 2;
 let hard_threshold = 35;
 let cooldown = 0.005 * soft_threshold;
-let motionTracking = false;
 let playerStatus = '';
 let colour_value = 0;
 let result = 0;
@@ -103,6 +102,10 @@ socket.on('end-of-game', () => {
 	}
 });
 
+socket.on('winner-found', (username) => {
+	window.location = '/winner';
+});
+
 //BPM CHANGES
 socket.on('bpm-change', function (threshold_percentage) {
 	hard_threshold *= threshold_percentage;
@@ -160,7 +163,6 @@ if (window.DeviceMotionEvent !== undefined) {
 				heading.innerHTML = 'Ready';
 				heading.style.color = 'rgb(36, 209, 134)';
 
-				motionTracking = false;
 				playerStatus = 'ready';
 
 				socket.emit('status-change', {
