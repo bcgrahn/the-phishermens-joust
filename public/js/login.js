@@ -29,9 +29,6 @@ container.addEventListener('click', () => {
 	if (playerStatus == 'waiting') {
 		indicator_value = 2;
 	}
-	if (playerStatus == 'playing') {
-		colour_value = soft_threshold * 2;
-	}
 });
 
 button.addEventListener('click', (e) => {
