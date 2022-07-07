@@ -143,6 +143,12 @@ socket.on('player-change', (readyCount, totalCount) => {
 	}
 });
 
+let time_to_change = false;
+
+setInterval(() => {
+	time_to_change = true;
+}, 200);
+
 if (window.DeviceMotionEvent !== undefined) {
 	window.ondevicemotion = function (e) {
 		if (playerStatus == 'waiting') {
@@ -196,13 +202,21 @@ if (window.DeviceMotionEvent !== undefined) {
 				new Audio('./../audio_files/game_over.mp3').play();
 
 				playerStatus = 'eliminated';
+				socket.emit('status-change', {
+					status: playerStatus,
+					colour: getRgb(colour_value, soft_threshold),
+					value: colour_value / soft_threshold,
+				});
 			}
 
-			socket.emit('status-change', {
-				status: playerStatus,
-				colour: getRgb(colour_value, soft_threshold),
-				value: colour_value / soft_threshold,
-			});
+			if (time_to_change) {
+				socket.emit('status-change', {
+					status: playerStatus,
+					colour: getRgb(colour_value, soft_threshold),
+					value: colour_value / soft_threshold,
+				});
+				time_to_change = false;
+			}
 
 			let rgb = getRgb(colour_value, soft_threshold);
 			container.style.backgroundColor = rgb;

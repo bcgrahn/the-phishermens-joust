@@ -210,20 +210,20 @@ window.addEventListener('click', () => {
 
 animate();
 
-const audio = new Audio('audio.mp3');
+// const audio = new Audio('audio.mp3');
 
-let playing = false;
+// let playing = false;
 
-window.addEventListener('scroll', (e) => {
-	if (!audio.isPlaying) {
-		audio.play();
-	}
-});
+// window.addEventListener('scroll', (e) => {
+// 	if (!audio.isPlaying) {
+// 		audio.play();
+// 	}
+// });
 
-window.addEventListener('touchstart', () => {
-	audio.muted = false;
-	audio.play();
-});
+// window.addEventListener('touchstart', () => {
+// 	audio.muted = false;
+// 	audio.play();
+// });
 
 setInterval(function () {
 	x = innerWidth * Math.random();
@@ -274,36 +274,3 @@ const label = document.querySelector('.friction-text');
 // 	friction = Math.round(friction * 100) / 100
 // 	label.innerHTML = `Velocity x ${friction}`
 // })
-
-// --- timer ---
-
-let countdown = document.querySelector('.countdown');
-
-console.log(countdown);
-
-// Set the date we're counting down to
-let countDownDate = new Date('May 28, 2022 17:30:00').getTime();
-
-// Update the count down every 1 second
-let x = setInterval(function () {
-	// Get today's date and timelet now = new Date().getTime();
-	let now = new Date().getTime();
-
-	// Find the distance between now and the count down date
-	let distance = countDownDate - now;
-
-	// Time calculations for days, hours, minutes and seconds
-	let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-	let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-	// Output the result in an element with id="demo"
-	countdown.innerHTML = hours + 'h ' + minutes + 'm ' + seconds + 's ';
-
-	// If the count down is over, write some text
-	if (distance < 0) {
-		clearInterval(x);
-		countdown.innerHTML = 'See you guys soon! ;)';
-	}
-}, 1000);

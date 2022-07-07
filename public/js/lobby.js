@@ -79,25 +79,35 @@ socket.on('server-restart', () => {
 
 const startButton = document.getElementById('start-game');
 
+let started = false;
+
 startButton.addEventListener('click', function () {
-	if (readyCount > 1) {
-		remainingCount = readyCount;
-		socket.emit('server-game-start');
-		socket.emit('remaining-count', remainingCount);
-		const heading = document.querySelector('h1');
-		heading.innerHTML = `Game in progress`;
+	if (!started) {
+		if (readyCount > 1) {
+			remainingCount = readyCount;
+			socket.emit('server-game-start');
+			socket.emit('remaining-count', remainingCount);
+			const heading = document.querySelector('h1');
+			heading.innerHTML = `Game in progress`;
+			if (intrvl != null)
+				clearInterval(intrvl);
+			started = true;
+		} else {
+			const heading = document.querySelector('h1');
+			heading.innerHTML = 'Not enough players ready';
+			setTimeout(() => {
+				heading.innerHTML = "The Phisherman's Joust";
+			}, 3000);
+		}
 	} else {
-		const heading = document.querySelector('h1');
-		heading.innerHTML = 'Not enough players ready';
-		setTimeout(() => {
-			heading.innerHTML = "The Phisherman's Joust";
-		}, 3000);
+		alert('Please restart game first')
 	}
 });
 
 document.getElementById('restart-game').addEventListener('click', function () {
 	console.log('RESTARTING GAME');
 	socket.emit('server-game-restart');
+	socket.emit('remaining-count', remainingCount);
 });
 
 function addPlayer(player) {
