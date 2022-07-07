@@ -41,6 +41,11 @@ startButton.addEventListener('click', function () {
 	socket.emit('server-game-start');
 });
 
+document.getElementById('restart-game').addEventListener('click', function () {
+	console.log('RESTARTING GAME');
+	socket.emit('server-game-restart');
+});
+
 function addPlayer(player) {
 	const li = document.createElement('li');
 

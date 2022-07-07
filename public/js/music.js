@@ -1,4 +1,4 @@
-const game_music = "hing-yan-au_os";
+const game_music = "i_got_a_feeling";
 
 const pause_button = document.getElementById("pause-music");
 const bpmelem = document.getElementById("music-bpm");
@@ -44,9 +44,7 @@ slider.oninput = function() {
 
   let threshold_percentage = convert_offset_to_percentage();
 
-  "<span style='font-size:40px'>John Doe</span>"
-
-  bpmelem.innerHTML ="'Music Speed: <span style='color:rgb(36, 209, 134)'>" 
+  bpmelem.innerHTML ="Music Speed: <span style='color:rgb(36, 209, 134)'>" 
   + String(Math.round(100 * threshold_percentage)) + "%</span>";
 
   music_socket.emit('bpm-change', threshold_percentage);
@@ -147,7 +145,7 @@ function update_bpm() {
       }
 
       let threshold_percentage = convert_offset_to_percentage();
-      bpmelem.innerHTML ="'Music Speed: <span style='color:rgb(36, 209, 134)'>" 
+      bpmelem.innerHTML ="Music Speed: <span style='color:rgb(36, 209, 134)'>" 
       + String(Math.round(100 * threshold_percentage)) + "%</span>";
 
       slider.value = bpm_offset;
@@ -178,12 +176,24 @@ function updateSong() {
 
 document.getElementById("restart-music").addEventListener("click", function() {
   bpm_offset = 0;
+  Tone.Transport.bpm.value = original_bpm;
+
+  let threshold_percentage = convert_offset_to_percentage();
+  bpmelem.innerHTML ="Music Speed: <span style='color:rgb(36, 209, 134)'>" 
+  + String(Math.round(100 * threshold_percentage)) + "%</span>";
+
   updateSong();
   Tone.Transport.start(0);
+
+  music_socket.emit('bpm-change', threshold_percentage);
+});
+
+//on game restart
+socket.on('force-refresh', () => {
+	pause_button.click();
 });
 
 document.getElementById("start-game").addEventListener("click", function() {
-	console.log("STARTING MUSIC");
 
   (function loop() {
     rand_interval = random_interval();
@@ -193,7 +203,7 @@ document.getElementById("start-game").addEventListener("click", function() {
     interval_label.innerHTML ="Seconds to next speed change: <span style='color:rgb(36, 209, 134)'>" 
     + rand_interval + "</span>";
 
-    setTimeout(function() {
+    loop_interval = setTimeout(function() {
       update_bpm();
       loop();  
     }, rand_interval * 1000);
@@ -209,9 +219,25 @@ pause_button.addEventListener("click", function() {
   if (Tone.Transport.state !== 'started') {
     updateSong();
     Tone.context._context.resume();
+
+    (function loop() {
+      rand_interval = random_interval();
+  
+      interval_label.innerText = "Seconds to next speed change: " + rand_interval;
+  
+      interval_label.innerHTML ="Seconds to next speed change: <span style='color:rgb(36, 209, 134)'>" 
+      + rand_interval + "</span>";
+  
+      loop_interval = setTimeout(function() {
+        update_bpm();
+        loop();  
+      }, rand_interval * 1000);
+    }());
+
     pause_button.innerHTML = "Pause";
   } else {
     Tone.Transport.stop()
+    clearTimeout(loop_interval);
     pause_button.innerHTML = "Play";
   }
 });

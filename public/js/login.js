@@ -6,7 +6,6 @@ let soft_threshold = 2;
 let hard_threshold = 35;
 const sensitivity = 0.002;
 let cooldown = 0.005 * soft_threshold;
-let motionTracking = false;
 let playerStatus = '';
 let colour_value = 0;
 
@@ -122,7 +121,6 @@ if (window.DeviceMotionEvent !== undefined) {
 				// if (!document.fullscreenElement) {
 				// 	document.documentElement.requestFullscreen();
 				// }
-				motionTracking = false;
 				playerStatus = 'ready';
 
 				socket.emit('status-change', {
