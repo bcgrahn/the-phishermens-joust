@@ -3,6 +3,8 @@ let socket = io();
 let readyCount = 0;
 let totalCount = 0;
 let remainingCount = 0;
+let remainingTime = 10;
+let intrvl = null;
 
 function eliminationLogic() {
 	remainingCount--;
@@ -16,12 +18,21 @@ function isEnd() {
 }
 
 socket.on('winner-found', (username) => {
-	const heading = document.querySelector('h1');
-	heading.innerHTML = username;
+	// const heading = document.querySelector('h1');
+	// heading.innerHTML = username;
+	socket.emit('display-winner', username);
+
+	window.location = '/winner';
 });
 
 socket.on('player-connected', (player) => {
 	addPlayer(player);
+	if (intrvl != null) {
+		const heading = document.querySelector('h1');
+		clearInterval(intrvl);
+		intrvl = null;
+		heading.innerHTML = "The Phisherman's Joust";
+	}
 });
 
 socket.on('player-disconnected', (player) => {
@@ -34,8 +45,21 @@ socket.on('status-change', (player) => {
 
 	if (player.status.status == 'ready') {
 		readyCount += 1;
+		if (readyCount > 1 && readyCount == totalCount) {
+			remainingTime = 10;
+			intrvl = setInterval(() => {
+				const heading = document.querySelector('h1');
+				heading.innerHTML = `Starting in ${remainingTime--}s`;
+				if (remainingTime < 0) {
+					startButton.click();
+					if (intrvl != null) {
+						clearInterval(intrvl);
+						intrvl = null;
+					}
+				}
+			}, 1000);
+		}
 		e.style.color = 'rgb(36, 209, 134)';
-
 		socket.emit('player-change', readyCount, totalCount);
 	} else if (player.status.status == 'eliminated') {
 		eliminationLogic();
@@ -56,9 +80,19 @@ socket.on('server-restart', () => {
 const startButton = document.getElementById('start-game');
 
 startButton.addEventListener('click', function () {
-	remainingCount = readyCount;
-	socket.emit('server-game-start');
-	socket.emit('remaining-count', remainingCount);
+	if (readyCount > 1) {
+		remainingCount = readyCount;
+		socket.emit('server-game-start');
+		socket.emit('remaining-count', remainingCount);
+		const heading = document.querySelector('h1');
+		heading.innerHTML = `Game in progress`;
+	} else {
+		const heading = document.querySelector('h1');
+		heading.innerHTML = 'Not enough players ready';
+		setTimeout(() => {
+			heading.innerHTML = "The Phisherman's Joust";
+		}, 3000);
+	}
 });
 
 document.getElementById('restart-game').addEventListener('click', function () {
