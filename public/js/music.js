@@ -1,4 +1,4 @@
-const game_music = "i_got_a_feeling";
+const game_music = "hing-yan-au_os";
 
 const pause_button = document.getElementById("pause-music");
 const bpmelem = document.getElementById("music-bpm");
