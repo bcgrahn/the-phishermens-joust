@@ -49,7 +49,7 @@ app.get('/spectate', function (req, res) {
 	res.render('spectator.ejs', { players });
 });
 
-if(process.env.PORT==null){
+if (process.env.PORT == null) {
 	const ssl = https.createServer(
 		{
 			key: fs.readFileSync(path.join(__dirname, './certs/key.pem'), 'utf-8'),
@@ -57,16 +57,18 @@ if(process.env.PORT==null){
 		},
 		app
 	);
-	
+
 	ssl.listen(5000, () => {
 		console.log(`Server is active on port: ${5000}`);
 	});
-	
+
 	io = socketio(ssl);
-}else{
+} else {
 	const http = require('http');
 	server = http.Server(app);
-	server.listen(process.env.PORT,()=>console.log(`Server is active on port: ${process.env.PORT}`))
+	server.listen(process.env.PORT, () =>
+		console.log(`Server is active on port: ${process.env.PORT}`)
+	);
 	io = socketio(server);
 }
 
@@ -101,7 +103,6 @@ setTimeout(() => {
 }, 1000);
 
 io.sockets.on('connection', function (socket) {
-	//add the socket id to stack of objects based on id
 	socket.on('availability-check', (user_name) => {
 		if (user_name.trim() != '') {
 			if (players != null) {
@@ -127,33 +128,15 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 
-	// socket.on('login-check', () => {
-	// 	if (players != null) {
-	// 		const index = players.findIndex((object) => {
-	// 			return object.id === socket.id;
-	// 		});
-
-	// 		if (index > -1) {
-	// 			socket.emit('login-response', true);
-	// 		}
-	// 		else {
-	// 			socket.emit('login-response', false);
-	// 		}
-	// 	}
-	// 	else {
-	// 		socket.emit('login-response', false);
-	// 	}
-	// })
-
 	socket.on('server-game-start', () => {
-		console.log('server-game-start request logged');
+		// console.log('server-game-start request logged');
 		io.sockets.emit('game-start');
 	});
 
 	socket.on('bpm-change', (bpmchange) => {
-        console.log('bpm-change request logged');
-        io.sockets.emit('bpm-change', bpmchange);
-    });
+		// console.log('bpm-change request logged');
+		io.sockets.emit('bpm-change', bpmchange);
+	});
 
 	socket.on('request-players', (data) => {
 		socket.emit('player-load', players);
@@ -168,12 +151,25 @@ io.sockets.on('connection', function (socket) {
 		});
 		if (players[index] != null) {
 			players[index].rgb = rgb;
-			if (rgb == 'rgb(255, 0, 0)') {
-				console.log(players[index].username + ' eliminated.');
-			}
 		}
 
 		io.sockets.emit('motion-update', players[index]);
+	});
+
+	socket.on('remaining-count', (remainingCount) => {
+		io.sockets.emit('remaining-count', remainingCount);
+	});
+
+	socket.on('player-change', (readyCount, totalCount) => {
+		io.sockets.emit('player-change', readyCount, totalCount);
+	});
+
+	socket.on('end-of-game', () => {
+		io.sockets.emit('end-of-game');
+	});
+
+	socket.on('winner-found', (username) => {
+		io.sockets.emit('winner-found', username);
 	});
 
 	socket.on('status-change', (status) => {
@@ -185,12 +181,6 @@ io.sockets.on('connection', function (socket) {
 			if (index > -1) {
 				players[index].status = status;
 				io.sockets.emit('status-change', players[index]);
-				console.log(
-					"'" +
-						players[index].username +
-						"' status change: " +
-						players[index].status
-				);
 			} else {
 				socket.emit('force-refresh');
 			}

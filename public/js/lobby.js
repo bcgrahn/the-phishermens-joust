@@ -1,5 +1,25 @@
 let socket = io();
 
+let readyCount = 0;
+let totalCount = 0;
+let remainingCount = 0;
+
+function eliminationLogic() {
+	remainingCount--;
+	socket.emit('remaining-count', remainingCount);
+}
+
+function isEnd() {
+	if (remainingCount <= 1) {
+		socket.emit('end-of-game');
+	}
+}
+
+socket.on('winner-found', (username) => {
+	const heading = document.querySelector('h1');
+	heading.innerHTML = username;
+});
+
 socket.on('player-connected', (player) => {
 	addPlayer(player);
 });
@@ -8,16 +28,24 @@ socket.on('player-disconnected', (player) => {
 	removePlayer(player);
 });
 
-socket.on('status-change', (data) => {
-	const e = document.getElementById(`player-${data.id}`).children.item(1);
-	e.innerHTML = data.status.status;
+socket.on('status-change', (player) => {
+	const e = document.getElementById(`player-${player.id}`).children.item(1);
+	e.innerHTML = player.status.status;
 
-	if (data.status.status == 'ready') {
+	if (player.status.status == 'ready') {
+		readyCount += 1;
 		e.style.color = 'rgb(36, 209, 134)';
-	} else if (data.status.status == 'eliminated') {
-		e.style.color = 'rgb(255, 0, 0)';
-	} else if (data.status.status == 'playing') {
-		e.style.color = data.status.colour;
+
+		socket.emit('player-change', readyCount, totalCount);
+	} else if (player.status.status == 'eliminated') {
+		eliminationLogic();
+		e.style.color = 'rgb(194, 72, 72)';
+		isEnd();
+	} else if (player.status.status == 'playing') {
+		e.style.color = player.status.colour;
+		// e.innerHTML = '';
+		// e.style.backgroundColor = data.status.colour;
+		// e.style.width = `${50 - data.status.value * 50}%`;
 	}
 });
 
@@ -28,8 +56,9 @@ socket.on('server-restart', () => {
 const startButton = document.getElementById('start-game');
 
 startButton.addEventListener('click', function () {
-	console.log('STARTING GAME');
+	remainingCount = readyCount;
 	socket.emit('server-game-start');
+	socket.emit('remaining-count', remainingCount);
 });
 
 function addPlayer(player) {
@@ -45,7 +74,7 @@ function addPlayer(player) {
 	d2.classList.add('status');
 
 	d1.innerHTML = player.username;
-	d2.innerHTML = 'Waiting';
+	d2.innerHTML = 'waiting';
 	d2.style.color = 'rgb(207, 187, 89)';
 
 	li.appendChild(d1);
@@ -53,12 +82,29 @@ function addPlayer(player) {
 
 	const ol = document.querySelector('.player-ul');
 	ol.appendChild(li);
+
+	totalCount += 1;
+
+	socket.emit('player-change', readyCount, totalCount);
 }
 
 function removePlayer(player) {
 	const el = document.getElementById(`player-${player.id}`).children.item(1);
 	el.innerHTML = 'Disconnected';
 	el.style.color = 'rgb(194, 72, 72)';
+
+	totalCount -= 1;
+
+	if (player.status.status == 'ready') {
+		readyCount -= 1;
+	}
+
+	if (player.status.status == 'playing') {
+		eliminationLogic();
+	}
+
+	socket.emit('player-change', readyCount, totalCount);
+	isEnd();
 
 	setTimeout(() => {
 		const e = document.getElementById(`player-${player.id}`);

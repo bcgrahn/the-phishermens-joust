@@ -128,6 +128,7 @@ DeviceMotionEvent.requestPermission()
 		if (response == 'granted') {
 			window.addEventListener('devicemotion', (e) => {
 				// do something with e
+				e.preventDefault();
 			});
 		}
 	})

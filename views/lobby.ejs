@@ -26,12 +26,11 @@
                     url: https://the-phishermen-joust.herokuapp.com/
                 </div>
 
-                <div class="url" id="music-bpm">Music Speed: 100%</div>
             </div>
             <div class="start-button-container">
-                <div class="start-button" id="start-game">
+                <button class="start-button" id="start-game">
                     Start Game
-                </div>
+                </button>
             </div>
 
         </div>
@@ -45,18 +44,18 @@
             </div>
             <div class="right-bottom-container">
                 <div class="button-container">
-                    <div class="button" id="pause-music">
+                    <button class="button" id="pause-music">
                         Pause
-                    </div>
+                    </button>
                 </div>
 
                 <div class="button-container">
-                    <div class="button" id="restart-music">
+                    <button class="button" id="restart-music">
                         Restart
-                    </div>
+                    </button>
                 </div>
 
-                <div class="button-container">
+                <!-- <div class="button-container">
                     <div class="button" id="increase-music">
                         Faster
                     </div>
@@ -66,7 +65,20 @@
                     <div class="button" id="decrease-music">
                         Slower
                     </div>
+                </div> -->
+
+                <div class="music-label" id="music-bpm" style="padding-left: 2%;">
+                    Music Speed: <span style="color: rgb(36, 209, 134)">100%</span>
                 </div>
+
+                <div class="music-label" id="music-interval" style="padding-right: 2%;">
+                    Seconds to next speed change:
+                </div>
+
+                <div class="slider-container">
+                    <input type="range" min="-40" max="90" value="0" class="slider" id="music-slider">
+                </div>
+
             </div>
     </div>
 </body>

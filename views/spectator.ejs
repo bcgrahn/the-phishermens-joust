@@ -18,15 +18,8 @@
                 <span>Player</span>
             </header>
             <section id="leaderboard">
-                <ol>
-                    <% players.forEach(obj=>{ %>
-                        <% if(obj.status.toLowerCase() === 'eliminated') {%>
-                            <li class="out">
-                                <span><%= obj.status %></span>
-                                <span><%= obj.username %></span>
-                            </li>
-                        <% }%>  
-                    <% }) %> 
+                <ol id="list_in">
+                    
                 </ol>
             </section>
         </section>
@@ -37,19 +30,14 @@
                 <span>Player</span>
             </header>
             <section id="playing">
-                <ol>
-                    <% players.forEach(obj=>{ %>
-                        <% if(obj.status.toLowerCase() !== 'eliminated') {%>
-                            <li class="in">
-                                <span><%= obj.status %></span>
-                                <span><%= obj.username %></span>
-                            </li>
-                        <% }%>  
-                    <% }) %> 
+                <ol id="list_out">
+                    
                 </ol>
             </section>
         </section>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/spectator.js"></script>
     <script src="/js/fullscreen.js"></script>
 </body>
 
