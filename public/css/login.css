@@ -9,32 +9,22 @@
     font-family: 'Orbitron', sans-serif;
     /* outline: 1px solid white;    */
 }
+html{
+    height: 100%;
+    width: 100%;
+}
+body { 
+    height: 100%; 
+    width: 100%;
+}
 
-body {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#main_container {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    row-gap: 20px;
     background-color: #111;
-    flex-direction: column;
-    
-}
-
-header {
-    width: 95vw;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    padding: 1vmax;
-    margin-top: 5vh;
-    margin-bottom: 5vh;
-    border: 5px solid rgb(36, 209, 134);
-    border-radius: 20px;
-}
-
-h1 {
-    font-size: 3vmax;
 }
 
 h2 {
@@ -42,22 +32,25 @@ h2 {
     padding: 5%;
 }
 
-.container {
-    position: relative;
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    width: 95vw;
-    margin-bottom: 5vh;
+#page_container {
+    height: 100%;
+    width: 95%;
+    margin: auto;
     font-size: 2.5vmax;
     border: 5px solid rgb(36, 209, 134);
-    border-radius: 20px;
-    justify-content: center;
+    border-radius: 20px;  
+    display: flex;
     align-items: center;
-    overflow: hidden;
 }
 
-.login-sheet {
+#page_container span{
+    width: 100%;
+    text-align: center;
+}
+
+
+
+#login_sheet {
     display: flex;
     position: absolute;
     top: 0;
@@ -71,13 +64,14 @@ h2 {
 
     clip-path: circle(100% at 50% 50%);
     transition: clip-path 1000ms ease-in-out;
+    border-radius: 20px;
 }
 
-.login-sheet.after {
+#login_sheet.after {
     clip-path: circle(0% at 50% 50%); 
 }
 
-.status-sheet {
+#status_sheet {
     display: flex;
     position: absolute;
     top: 0;
@@ -88,9 +82,10 @@ h2 {
     align-items: center;
     text-align: center;
     background-color: #111;
+    border-radius: 20px;
 }
 
-.indicator-sheet {
+#indicator_sheet {
     display: flex;
     position: absolute;
     top: 0;
@@ -105,17 +100,46 @@ h2 {
 
     clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0% 100%);
 }
-
-.username-input {
+#username_input {
     padding: 3%;
-    background-color: #111;
+    background-color: transparent;
     border: 5px solid rgb(36, 209, 134);
     border-radius: 20px;
     justify-content: center;
     align-items: center;
+    width: 80%;
 }
 
-.button-input {
+#username_input:focus{
+    outline: none;
+    animation: rainbow_border 3s infinite;
+}
+
+@keyframes rainbow_border{
+    0%{
+        border-color:rgb(209, 36, 36);
+    }
+    18%{
+        border-color:rgb(209, 149, 36);
+    }
+    36%{
+        border-color:rgb(209, 203, 36);
+    }
+    56%{
+        border-color:rgb(36, 209, 134);
+    }
+    65%{
+        border-color:rgb(36, 50, 209);
+    }
+    85%{
+        border-color:rgb(94, 36, 209);
+    }
+    100%{
+        border-color:rgb(195, 36, 209);
+    }
+}
+
+#button_input {
     border: none;
     font-weight: 900;
     margin: 5%;
@@ -123,48 +147,4 @@ h2 {
     background-color: rgb(36, 209, 134);
     border-radius: 20px;
     cursor: pointer;
-}
-#j_1{
-    color: rgb(209, 36, 36);
-    animation: colour_change 1.5s infinite;
-}
-#j_2{
-    color: rgb(209, 149, 36);
-    animation: colour_change 3s infinite;
-}
-#j_3{
-    color: rgb(209, 203, 36);
-    animation: colour_change 2s infinite;
-}
-#j_4{
-    color: rgb(36, 209, 134);
-    animation: colour_change 5s infinite;
-}
-#j_5{
-    color: rgb(36, 50, 209);
-    animation: colour_change 2.5s infinite;
-}
-
-@keyframes colour_change{
-    0%{
-        color: rgb(209, 36, 36);
-    }
-    19%{
-        color: rgb(209, 149, 36);
-    }
-    38%{
-        color: rgb(209, 203, 36);
-    }
-    57%{
-        color: rgb(36, 209, 134);
-    }
-    66%{
-        color: rgb(36, 50, 209);
-    }
-    85%{
-        color: rgb(94, 36, 209);
-    }
-    100%{
-        color: rgb(195, 36, 209);
-    }
 }

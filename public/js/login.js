@@ -1,7 +1,7 @@
-const button = document.querySelector('.button-input');
-const indicator = document.querySelector('.indicator-sheet');
+const button = document.getElementById('button_input');
+const indicator = document.getElementById('indicator_sheet');
 const heading = document.querySelector('h1');
-const container = document.getElementById('colour-block');
+const container = document.getElementById('page_container');
 
 const sensitivity = 0.003;
 let indicator_value = 0;
@@ -32,7 +32,7 @@ container.addEventListener('click', () => {
 });
 
 button.addEventListener('click', (e) => {
-	sendingId = document.querySelector('.username-input');
+	sendingId = document.getElementById('username_input');
 	socket.emit('availability-check', sendingId.value);
 });
 
@@ -40,7 +40,7 @@ socket.on('availability-response', (availible) => {
 	if (availible) {
 		playerStatus = 'waiting';
 
-		const sheet = document.querySelector('.login-sheet');
+		const sheet = document.querySelector('#login_sheet');
 		sheet.classList.add('after');
 
 		const heading = document.querySelector('h1');
@@ -53,7 +53,7 @@ socket.on('availability-response', (availible) => {
 				.removeChild(document.getElementsByTagName('input')[0]);
 			document
 				.getElementById('container_details')
-				.removeChild(document.getElementsByClassName('button-input')[0]);
+				.removeChild(document.getElementById('button_input'));
 		}, 1000);
 
 		setInterval(() => {
@@ -139,7 +139,7 @@ socket.on('game-start', () => {
 
 socket.on('player-change', (readyCount, totalCount) => {
 	if (playerStatus == 'ready') {
-		container.innerHTML = `${readyCount}/${totalCount} players ready`;
+		container.innerHTML = `<span>${readyCount}/${totalCount} players ready</span>`;
 	}
 });
 
@@ -174,7 +174,7 @@ if (window.DeviceMotionEvent !== undefined) {
 				});
 
 				container.style.backgroundColor = 'rgb(36, 209, 134)';
-				container.innerHTML = 'Game will begin soon';
+				container.innerHTML = '<span> Game will begin soon </span>';
 
 				indicator.style.clipPath = `polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)`;
 			}

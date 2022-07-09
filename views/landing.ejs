@@ -12,18 +12,14 @@
 
 <body>
     <div id="main_container">
-        <header id="title">
-            <h1>The Phisherman's <span class="joust_changing"><span id="j_3">J</span><span id="j_1">O</span><span
-                        id="j_5">U</span><span id="j_2">S</span><span id="j_4">T</span></span></h1>
-        </header>
+        <%- include("partials/title") %>
         <section id="menu_container">
             <header>
-                <section> <img src="/images/joust_character.gif" width="100%"></section>
-                <section>
+                <section id="joust_image"> <img src="/images/joust_character.gif" width="100%"></section>
+                <section id="text">
                     <h2>Are you ready to <span class="joust_changing"><span id="j_1">J</span><span
                                 id="j_2">O</span><span id="j_3">U</span><span id="j_4">S</span><span
                                 id="j_5">T</span></span>?</h2>
-                    <h3>Please select an option below:</h3>
                 </section>
             </header>
             <div id="button_container">

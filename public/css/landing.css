@@ -4,55 +4,31 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    /* position: relative; */
+
     color: #fff;
-    
     font-family: 'Orbitron', sans-serif;
-    /* outline: 1px solid white;    */
 }
 html{
     height: 100%;
+    width: 100%;
 }
-body{
-    height: 100%;
+body { 
+    height: 100%; 
+    width: 100%;
 }
-
 #main_container {
-    width: 100vw;
-    /* min-height: -webkit-fill-available; */
     height: 100%;
+    width: 100%;
+    /* min-height: -webkit-fill-available; */
+    
     display: grid;
     grid-template-rows: 1fr 9fr;
     row-gap: 20px;
     background-color: #111;
 }
 
-#title {
-    height: fit-content;
-    width: 95%;
-    
-    margin: auto;
-
-    padding: 1vmax;
-    /* padding: 1vmax; */
-    /* margin-top: 5vh;
-    margin-bottom: 5vh; */
-    border: 5px solid rgb(36, 209, 134);
-    border-radius: 20px;
-}
-
-h1 {
-    font-size: 2.7vmax;
-}
-
 h2 {
-    font-size: 2vmax;
-    padding: 2%;
-}
-
-h3 {
-    font-size: 1.5vmax;
-    padding: 3%;
+    font-size: 3vmax;
 }
 
 a {
@@ -74,26 +50,31 @@ a {
 }
 #menu_container header{
     height: 100%;
+    
     display: grid;
     grid-template-rows: 3fr 1fr;
 }
 #menu_container header section{
     height: 100%;
+    width: 100%;
 }
 #menu_container header section img {
-   height: 90%;
+   width: 300px;
+}
+#text .joust_changing{
+    font-size: 3vmax;
 }
 
 #button_container {
-    width: 70%;
+    width: 225px;
     height: 100%;
     margin: auto;
 
     display: grid;
     grid-template-rows: 1fr 1fr 1fr;
-    row-gap:30px;
+    /* row-gap:30px; */
     text-align: center;
-    padding: 1em;
+    /* padding: 1em; */
 }
 #button_container button{
     height: 80%;
@@ -104,59 +85,58 @@ a {
 }
 .button {
     display: inline-block;
+    padding: 15px;
     width: 100%;
-    height: 100%;
-
     font-weight: 900;
-    font-size: 3vmax;
+    font-size: 3.5vmax;
 
     background-color: rgb(36, 209, 134);
     border-radius: 10px;
-    padding-top: 7%;
+    /* padding-top: 7%; */
 }
 
-/* Animation colours and keyframes for JOUST */
-#j_1{
-    color: rgb(209, 36, 36);
-    animation: colour_change 1.5s infinite;
-}
-#j_2{
-    color: rgb(209, 149, 36);
-    animation: colour_change 3s infinite;
-}
-#j_3{
-    color: rgb(209, 203, 36);
-    animation: colour_change 2s infinite;
-}
-#j_4{
-    color: rgb(36, 209, 134);
-    animation: colour_change 5s infinite;
-}
-#j_5{
-    color: rgb(36, 50, 209);
-    animation: colour_change 2.5s infinite;
+/* Media queries */
+@media screen and (min-width:900px) {
+    .button{
+        font-size: 2.5vmax;
+    }
 }
 
-@keyframes colour_change{
-    0%{
-        color: rgb(209, 36, 36);
+@media screen and (max-width:319px){
+    #menu_container{
+        grid-template-rows: 1fr 2fr;
     }
-    19%{
-        color: rgb(209, 149, 36);
+    #menu_container header section{
+        display: flex;
+        align-items: center;
+        text-align: center;
     }
-    38%{
-        color: rgb(209, 203, 36);
+    #menu_container #joust_image{
+        display: none;
     }
-    57%{
-        color: rgb(36, 209, 134);
+    #button_container{
+        height: 80%;
+        width: 180px;
     }
-    66%{
-        color: rgb(36, 50, 209);
+    #text h2{
+        margin: auto;
     }
-    85%{
-        color: rgb(94, 36, 209);
+
+}
+
+@media screen and (max-height:600px) {
+    #menu_container #joust_image{
+        display: none;
     }
-    100%{
-        color: rgb(195, 36, 209);
+    #menu_container{
+        grid-template-rows: 1fr 5fr;
+    }
+    #menu_container header section{
+        display: flex;
+        align-items: center;
+        text-align: center;
+    }
+    #text h2{
+        margin: auto;
     }
 }
