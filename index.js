@@ -21,35 +21,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
 app.get('/lobby', (req, res) => {
-	res.render('lobby.ejs');
+	res.render('lobby', {players});
 });
 
 app.get('/', function (req, res) {
-	res.render('landing.ejs');
+	res.render('landing');
 });
 
 app.get('/login', function (req, res) {
-	res.render('login.ejs');
+	res.render('login');
 });
-// app.get('/game', function (req, res) {
-// 	const username = req.query.username;
-// 	if (username != null && username.trim() != '') {
-// 		res.render('game.ejs', {username: username});
-// 	} else {
-// 		res.redirect('/login');
-// 	}
-// });
 
 app.get('/winner', function (req, res) {
-	res.render('winner.ejs');
+	res.render('winner');
 });
 
-// app.get('/game', function (req, res) {
-// 	res.render('index.ejs');
-// });
-
 app.get('/spectate', function (req, res) {
-	res.render('spectator.ejs', { players });
+	res.render('spectator', { players });
 });
 
 if (process.env.PORT == null) {

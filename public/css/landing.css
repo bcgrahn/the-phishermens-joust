@@ -37,12 +37,12 @@ a {
 
 #menu_container {
     display: grid;
+    height: 100%;
+    width: 95%;
+    
     grid-template-rows: 1fr 1fr;
     
     text-align: center;
-
-    height: 100%;
-    width: 95vw;
 
     margin: auto;
     border: 5px solid rgb(36, 209, 134);

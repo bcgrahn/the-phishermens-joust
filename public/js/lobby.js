@@ -129,7 +129,7 @@ function addPlayer(player) {
 	li.appendChild(d1);
 	li.appendChild(d2);
 
-	const ol = document.querySelector('.player-ul');
+	const ol = document.getElementById('player_ul');
 	ol.appendChild(li);
 
 	totalCount += 1;
