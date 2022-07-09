@@ -41,9 +41,9 @@ socket.on('player-disconnected', (player) => {
 
 socket.on('status-change', (player) => {
 	const e = document.getElementById(`player-${player.id}`).children.item(1);
-	e.innerHTML = player.status.status;
+	e.innerHTML = player.status;
 
-	if (player.status.status == 'ready') {
+	if (player.status == 'ready') {
 		readyCount += 1;
 		if (readyCount > 1 && readyCount == totalCount) {
 			remainingTime = 10;
@@ -61,11 +61,11 @@ socket.on('status-change', (player) => {
 		}
 		e.style.color = 'rgb(36, 209, 134)';
 		socket.emit('player-change', readyCount, totalCount);
-	} else if (player.status.status == 'eliminated') {
+	} else if (player.status == 'eliminated') {
 		eliminationLogic();
 		e.style.color = 'rgb(194, 72, 72)';
 		isEnd();
-	} else if (player.status.status == 'playing') {
+	} else if (player.status == 'playing') {
 		e.style.color = player.status.colour;
 		// e.innerHTML = '';
 		// e.style.backgroundColor = data.status.colour;
@@ -142,13 +142,13 @@ function removePlayer(player) {
 	el.innerHTML = 'Disconnected';
 	el.style.color = 'rgb(194, 72, 72)';
 
-	totalCount -= 1;
+	totalCount = Math.max((totalCount-1),0);
 
-	if (player.status.status == 'ready') {
-		readyCount -= 1;
+	if (player.status == 'ready') {
+		readyCount = Math.max((readyCount-1),0);
 	}
 
-	if (player.status.status == 'playing') {
+	if (player.status == 'playing') {
 		eliminationLogic();
 	}
 

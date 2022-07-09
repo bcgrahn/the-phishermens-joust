@@ -181,7 +181,7 @@ io.sockets.on('connection', function (socket) {
 			});
 
 			if (index > -1) {
-				players[index].status = status;
+				players[index].status = status.status;
 				io.sockets.emit('status-change', players[index]);
 			} else {
 				socket.emit('force-refresh');

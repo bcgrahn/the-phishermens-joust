@@ -40,11 +40,12 @@
                                 <div class="status">Status</div>
                             </li>
                             <% players.forEach(player=>{ %>
+                                <% console.log(player) %> 
                                 <li id=<%='player-' + player.id; %> class = 'player-li'>
                                     <div class="player">
                                         <%= player.username %>
                                     </div>
-                                    <div class="status" style="color: rgb(207, 187, 89);">
+                                    <div class="status" style=<%= "color: "+player.rgb +";"%>>
                                         <%= player.status %>
                                     </div>
                                 </li>
