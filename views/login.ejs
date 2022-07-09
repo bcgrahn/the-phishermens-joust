@@ -42,9 +42,10 @@
                 container.style = "display: none;"
                 let btn = document.createElement('button');
                 btn.addEventListener('click', getAccel)
-                btn.style = 'height:50px;'
+                btn.style = 'height: 50px; color:#24d186;'
                 btn.innerHTML = "Get accelerometer access"
                 bg.appendChild(btn);
+                
             }
             function getAccel() {
                 DeviceMotionEvent.requestPermission().then(response => {
