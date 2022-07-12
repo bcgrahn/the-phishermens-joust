@@ -40,6 +40,11 @@ app.get('/spectate', function (req, res) {
 	res.render('spectator', { players });
 });
 
+//404 error page
+app.use('',(req, res)=>{
+	res.render('404')
+})
+
 if (process.env.PORT == null) {
 	const ssl = https.createServer(
 		{
