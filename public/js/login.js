@@ -81,7 +81,7 @@ socket.on('remaining-count', (remainingCount) => {
 		if (result == 2) {
 			suffix = 'nd';
 		}
-		container.innerHTML = `You came ${result}${suffix}!`;
+		container.innerHTML = `<span>You came ${result}${suffix}!</span>`;
 
 		playerStatus = '';
 	} else if (playerStatus == 'playing') {
