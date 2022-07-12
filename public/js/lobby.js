@@ -92,6 +92,7 @@ startButton.addEventListener('click', function () {
 			if (intrvl != null)
 				clearInterval(intrvl);
 			started = true;
+			socket.emit('music-start');
 		} else {
 			const heading = document.querySelector('h1');
 			heading.innerHTML = 'Not enough players ready';

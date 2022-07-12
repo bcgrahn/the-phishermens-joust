@@ -193,8 +193,29 @@ socket.on('force-refresh', () => {
 	pause_button.click();
 });
 
-document.getElementById("start-game").addEventListener("click", function() {
+// document.getElementById("start-game").addEventListener("click", function() {
 
+//   (function loop() {
+//     rand_interval = random_interval();
+
+//     interval_label.innerText = "Seconds to next speed change: " + rand_interval;
+
+//     interval_label.innerHTML ="Seconds to next speed change: <span style='color:rgb(36, 209, 134)'>" 
+//     + rand_interval + "</span>";
+
+//     loop_interval = setTimeout(function() {
+//       update_bpm();
+//       loop();  
+//     }, rand_interval * 1000);
+//   }());
+
+//   if (Tone.Transport.state !== 'started') {
+//     updateSong();
+//     Tone.context._context.resume();
+//   }
+// });
+
+music_socket.on('music-start',data=>{
   (function loop() {
     rand_interval = random_interval();
 
@@ -213,7 +234,7 @@ document.getElementById("start-game").addEventListener("click", function() {
     updateSong();
     Tone.context._context.resume();
   }
-});
+})
 
 pause_button.addEventListener("click", function() {
   if (Tone.Transport.state !== 'started') {

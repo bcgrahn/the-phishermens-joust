@@ -216,4 +216,8 @@ io.sockets.on('connection', function (socket) {
 			}
 		}
 	});
+
+	socket.on('music-start', data=>{
+		io.sockets.emit('music-start', true);
+	})
 });
