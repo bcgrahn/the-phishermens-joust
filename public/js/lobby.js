@@ -92,6 +92,12 @@ startButton.addEventListener('click', function () {
 			if (intrvl != null)
 				clearInterval(intrvl);
 			started = true;
+
+			let pauseButton = document.getElementById('pause-music');
+			pauseButton.classList.remove('disable')
+			let restartButton = document.getElementById('restart-music')
+			restartButton.classList.remove('disable')
+
 			socket.emit('music-start');
 		} else {
 			const heading = document.querySelector('h1');
