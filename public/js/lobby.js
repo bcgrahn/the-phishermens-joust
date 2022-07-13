@@ -113,6 +113,10 @@ startButton.addEventListener('click', function () {
 
 document.getElementById('restart-game').addEventListener('click', function () {
 	console.log('RESTARTING GAME');
+	let pauseButton = document.getElementById('pause-music');
+	pauseButton.classList.add('disable')
+	let restartButton = document.getElementById('restart-music')
+	restartButton.classList.add('disable')
 	socket.emit('server-game-restart');
 	socket.emit('remaining-count', remainingCount);
 });
@@ -149,10 +153,10 @@ function removePlayer(player) {
 	el.innerHTML = 'Disconnected';
 	el.style.color = 'rgb(194, 72, 72)';
 
-	totalCount = Math.max((totalCount-1),0);
+	totalCount = Math.max((totalCount - 1), 0);
 
 	if (player.status == 'ready') {
-		readyCount = Math.max((readyCount-1),0);
+		readyCount = Math.max((readyCount - 1), 0);
 	}
 
 	if (player.status == 'playing') {
