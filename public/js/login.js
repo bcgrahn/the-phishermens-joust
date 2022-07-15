@@ -74,11 +74,11 @@ socket.on('remaining-count', (remainingCount) => {
 
 		let suffix = 'th';
 
-		if (result == 3) {
+		if ((result%10 == 3) && result != 13) {
 			suffix = 'rd';
 		}
 
-		if (result == 2) {
+		if ((result%10 == 2) && result != 12) {
 			suffix = 'nd';
 		}
 		container.innerHTML = `<span>You came ${result}${suffix}!</span>`;
