@@ -2,10 +2,10 @@ let socket = io();
 
 socket.on('status-change', (data) => {
     const e = document.getElementById(`player-${data.id}`).children;
-    e[0].innerText = data.status.status;
-    if (data.status.status == 'ready') {
+    e[0].innerText = data.status;
+    if (data.status == 'ready') {
         e[0].style.color = 'rgb(36, 209, 134)';
-    } else if (data.status.status == 'eliminated') {
+    } else if (data.status == 'eliminated') {
         let status = e[0].cloneNode();
         status.innerText = e[0].innerText;
         let username = e[1].cloneNode();
@@ -24,7 +24,7 @@ socket.on('status-change', (data) => {
         ol_out.appendChild(list_item);
 
 
-    } else if (data.status.status == 'playing') {
+    } else if (data.status == 'playing') {
         e[0].style.color = data.status.colour;
     }
 });
