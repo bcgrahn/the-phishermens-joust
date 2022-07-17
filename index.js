@@ -86,6 +86,7 @@ function createPlayer(user_name, socketId) {
 		id: socketId,
 		data: 0,
 		status: 'waiting',
+		rank: 0,
 	};
 	players.push(player);
 	console.log("User '" + user_name + "' connected");

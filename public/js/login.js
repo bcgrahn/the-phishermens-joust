@@ -74,11 +74,11 @@ socket.on('remaining-count', (remainingCount) => {
 
 		let suffix = 'th';
 
-		if ((result%10 == 3) && result != 13) {
+		if (((result % 10) == 3) && result != 13) {
 			suffix = 'rd';
 		}
 
-		if ((result%10 == 2) && result != 12) {
+		if (((result % 10) == 2) && result != 12) {
 			suffix = 'nd';
 		}
 		container.innerHTML = `<span>You came ${result}${suffix}!</span>`;
@@ -94,13 +94,17 @@ socket.on('remaining-count', (remainingCount) => {
 socket.on('end-of-game', () => {
 	if (playerStatus == 'playing') {
 		container.innerHTML = 'You won!!!';
+		socket.emit('status-change', {
+			status: 'winner',
+			colour: getRgb(colour_value, soft_threshold),
+		});
 		playerStatus = '';
 		socket.emit('winner-found', sendingId.value);
 	}
 });
 
 socket.on('winner-found', (username) => {
-	window.location = '/winner';
+	window.location = '/winner'; 
 });
 
 //BPM CHANGES

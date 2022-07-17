@@ -164,7 +164,7 @@ function removePlayer(player) {
 	}
 
 	socket.emit('player-change', readyCount, totalCount);
-	isEnd();
+	//isEnd();
 
 	setTimeout(() => {
 		const e = document.getElementById(`player-${player.id}`);
