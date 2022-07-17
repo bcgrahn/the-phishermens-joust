@@ -24,7 +24,7 @@
                     <% players.forEach(obj=>{ %>
                         <% if(obj.status.status == 'eliminated') {%>
                             <li class="out" id = <%= "player-"+obj.id %>>
-                                <span><%= obj.status.status %></span>
+                                <span><%= obj.status %></span>
                                 <span><%= obj.username %></span>
                                 <span><%= obj.rank %></span>
                             </li>
@@ -43,9 +43,9 @@
             <section id="playing">
                 <ol id="list_in">
                     <% players.forEach(obj=>{ %>
-                        <% if(obj.status.status !== 'eliminated') {%>
+                        <% if(obj.status !== 'eliminated') {%>
                             <li class="in" id = <%= "player-"+obj.id %>>
-                                <span><%= obj.status.status || "waiting" %></span>
+                                <span><%= obj.status || "waiting" %></span>
                                 <span><%= obj.username %></span>
                                 <span><%= obj.rank %></span>
                             </li>

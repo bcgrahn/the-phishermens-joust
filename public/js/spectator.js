@@ -48,7 +48,6 @@ socket.on('status-change', (data) => {
         let ol_out = document.getElementById(`list_out`);
         ol_out.prepend(list_item);
 
-
     } else if (data.status == 'playing') {
         e[0].style.color = data.status.colour;
     }
@@ -103,9 +102,14 @@ socket.on('end-of-game', () => {
     gameEnded = true;
 });
 
-socket.on('player-disconnected', () => {
+socket.on('player-disconnected', (player) => {
+
+    //get id of player
+    //get element with id and remove
+    let p_out = document.getElementById('player-'+player.id);
+    // if(p_out !== null) 
     if(!gameEnded){
-        window.location.reload(true);
+        p_out.remove();
     }
 });
 
