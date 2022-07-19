@@ -12,18 +12,56 @@ let playerStatus = '';
 let colour_value = 0;
 let result = 0;
 let sendingId = '';
+let total_acceleration;
+let numPlayersLeft;
 
 let socket = io();
 
+//powers
+let invincibility = false;
+let nIntervId;
+
 function getRgb(value, threshold) {
-	if (value <= threshold / 2) {
-		let red = (2 * (255 * value)) / threshold;
-		return `rgb(${red}, 255, 0)`;
+
+	if (invincibility == true) {
+		return `rgb(0,255,255)`;
 	} else {
-		let green = 255 - 255 * 2 * ((value - threshold / 2) / threshold);
-		return `rgb(255, ${green}, 0)`;
+		if (value <= threshold / 2) {
+			let red = (2 * (255 * value)) / threshold;
+			return `rgb(${red}, 255, 0)`;
+		} else {
+			let green = 255 - 255 * 2 * ((value - threshold / 2) / threshold);
+			return `rgb(255, ${green}, 0)`;
+		}
 	}
 }
+
+// socket.on('invincibility-response', (randNum) => {
+
+// 	alert("here");
+// 	if (randNum == 2) {
+// 		invincibility = true;
+// 		container.innerHTML = `You have INVINCIBILITY`;
+// 	} else {
+// 		invincibility = false;
+// 		container.innerHTML = `${remainingCount} players remaining...`;
+// 	}
+// }); 
+
+function powers() {
+	let randNum = Math.floor((Math.random() * 4) + 1);
+	console.log(randNum);
+	if (randNum == 2) {
+		invincibility = true;
+		container.innerHTML = `You have INVINCIBILITY`;
+	} else {
+		invincibility = false;
+		container.innerHTML = `${numPlayersLeft} players remaining...`;
+	}
+	//socket.emit('invincibility-response', randNum);
+}
+
+
 
 container.addEventListener('click', () => {
 	if (playerStatus == 'waiting') {
@@ -37,6 +75,8 @@ button.addEventListener('click', (e) => {
 });
 
 socket.on('availability-response', (availible) => {
+	//for power player refresh. 
+
 	if (availible) {
 		playerStatus = 'waiting';
 
@@ -69,6 +109,9 @@ socket.on('availability-response', (availible) => {
 });
 
 socket.on('remaining-count', (remainingCount) => {
+	//for power player refresh. Definitely a better way of doing this
+	numPlayersLeft = remainingCount;
+
 	if (playerStatus == 'eliminated') {
 		result = remainingCount + 1;
 
@@ -92,6 +135,9 @@ socket.on('remaining-count', (remainingCount) => {
 });
 
 socket.on('end-of-game', () => {
+
+	nIntervId = null;
+
 	if (playerStatus == 'playing') {
 		container.innerHTML = 'You won!!!';
 		socket.emit('status-change', {
@@ -104,7 +150,7 @@ socket.on('end-of-game', () => {
 });
 
 socket.on('winner-found', (username) => {
-	window.location = '/winner'; 
+	window.location = '/winner';
 });
 
 //BPM CHANGES
@@ -122,6 +168,10 @@ socket.on('game-start', () => {
 		playerStatus = 'playing';
 		heading.innerHTML = sendingId.value;
 		heading.style.color = '#fff';
+
+		//if (!nIntervId) {
+		nIntervId = setInterval(powers, 5000);
+		//}
 
 		socket.emit('status-change', {
 			status: playerStatus,
@@ -158,8 +208,8 @@ if (window.DeviceMotionEvent !== undefined) {
 		if (playerStatus == 'waiting') {
 			let total = Math.sqrt(
 				Math.pow(e.acceleration.x, 2) +
-					Math.pow(e.acceleration.y, 2) +
-					Math.pow(e.acceleration.z, 2)
+				Math.pow(e.acceleration.y, 2) +
+				Math.pow(e.acceleration.z, 2)
 			);
 
 			indicator_value += sensitivity * 2 * total;
@@ -183,17 +233,22 @@ if (window.DeviceMotionEvent !== undefined) {
 				indicator.style.clipPath = `polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)`;
 			}
 
-			indicator.style.clipPath = `polygon(0 ${
-				100 - 100 * indicator_value
-			}%, 100% ${100 - 100 * indicator_value}%, 100% 100%, 0% 100%)`;
+			indicator.style.clipPath = `polygon(0 ${100 - 100 * indicator_value
+				}%, 100% ${100 - 100 * indicator_value}%, 100% 100%, 0% 100%)`;
 		} else if (playerStatus == 'playing') {
-			let total_acceleration = Math.sqrt(
-				Math.pow(e.acceleration.x, 2) +
+
+			if (!invincibility) {
+				total_acceleration = Math.sqrt(
+					Math.pow(e.acceleration.x, 2) +
 					Math.pow(e.acceleration.y, 2) +
 					Math.pow(e.acceleration.z, 2)
-			);
-
-			colour_value += sensitivity * total_acceleration;
+				);
+				colour_value += sensitivity * total_acceleration;
+			} else {
+				//colour_value = colour_value;
+				//total.acceleration = total.acceleration;
+			}
+			colour_value = colour_value;
 
 			if (
 				colour_value > soft_threshold ||
@@ -201,6 +256,8 @@ if (window.DeviceMotionEvent !== undefined) {
 			) {
 				colour_value = soft_threshold;
 				game_over = true;
+
+				nIntervId = null;
 
 				console.log('PLAYER DIED');
 				new Audio('./../audio_files/game_over.mp3').play();
