@@ -46,7 +46,7 @@ header{
     width: 90%;
     margin: auto;
     height: fit-content;
-    border-bottom: 3px rgb(36, 209, 134) solid;
+    border-bottom: 3px #24d186 solid;
 }
 header span{
     width: 100%;
