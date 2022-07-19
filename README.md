@@ -9,4 +9,4 @@
 
 Heroku game link: https://the-phishermen-joust.herokuapp.com/ <br><br>
 QR code:<br>
-<img src = "./public/images/qrcode.png" width=30% >
+<img src = "./public/images/qr-code.png" width=30% >
