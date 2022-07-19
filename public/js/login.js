@@ -53,7 +53,7 @@ function powers() {
 	console.log(randNum);
 	if (randNum == 2) {
 		invincibility = true;
-		container.innerHTML = `You have INVINCIBILITY`;
+		container.innerHTML = 'You are INVINCIBLE!!';
 	} else {
 		invincibility = false;
 		container.innerHTML = `${numPlayersLeft} players remaining...`;
