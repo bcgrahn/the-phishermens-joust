@@ -19,7 +19,9 @@ let socket = io();
 
 //powers
 let invincibility = false;
-let nIntervId;
+let nIntervId = null;
+let intrvl1 = null;
+let remainingTime = 5;
 
 function getRgb(value, threshold) {
 
@@ -49,19 +51,33 @@ function getRgb(value, threshold) {
 // }); 
 
 function powers() {
-	let randNum = Math.floor((Math.random() * 4) + 1);
+	let randNum = Math.floor((Math.random() * 3) + 1);
 	console.log(randNum);
-	if (randNum == 2) {
+	if ((randNum == 2) && (invincibility == false)) {
 		invincibility = true;
-		container.innerHTML = 'You are INVINCIBLE!!';
+		remainingTime = 5;
+		container.innerHTML = container.innerHTML = `You are INVINCIBLE!!
+		${remainingTime}s`;
+		intrvl1 = setInterval(() => {
+			if (remainingTime <= 1) {
+				if (intrvl1 != null) {
+					clearInterval(intrvl1);
+					intrvl1 = null;
+					invincibility = false;
+					container.innerHTML = `${numPlayersLeft} players remaining...`;
+				}
+			} else {
+				remainingTime--;
+				container.innerHTML = `You are INVINCIBLE!!
+				${remainingTime}s`;
+			}
+		}, 1000);
 	} else {
 		invincibility = false;
 		container.innerHTML = `${numPlayersLeft} players remaining...`;
 	}
 	//socket.emit('invincibility-response', randNum);
 }
-
-
 
 container.addEventListener('click', () => {
 	if (playerStatus == 'waiting') {
@@ -136,7 +152,7 @@ socket.on('remaining-count', (remainingCount) => {
 
 socket.on('end-of-game', () => {
 
-	nIntervId = null;
+	//nIntervId = null;
 
 	if (playerStatus == 'playing') {
 		container.innerHTML = 'You won!!!';
@@ -169,9 +185,11 @@ socket.on('game-start', () => {
 		heading.innerHTML = sendingId.value;
 		heading.style.color = '#fff';
 
-		//if (!nIntervId) {
-		nIntervId = setInterval(powers, 5000);
-		//}
+		if (nIntervId == null) {
+			nIntervId = setInterval(() => {
+				powers();
+			}, 5000);
+		}
 
 		socket.emit('status-change', {
 			status: playerStatus,
@@ -254,10 +272,13 @@ if (window.DeviceMotionEvent !== undefined) {
 				colour_value > soft_threshold ||
 				total_acceleration > hard_threshold
 			) {
+				if (nIntervId != null) {
+					clearInterval(nIntervId);
+					nIntervId = null;
+				}
+
 				colour_value = soft_threshold;
 				game_over = true;
-
-				nIntervId = null;
 
 				console.log('PLAYER DIED');
 				new Audio('./../audio_files/game_over.mp3').play();
