@@ -56,8 +56,8 @@ function powers() {
 	if ((randNum == 2) && (invincibility == false)) {
 		invincibility = true;
 		remainingTime = 5;
-		container.innerHTML = container.innerHTML = `You are INVINCIBLE!!
-		${remainingTime}s`;
+		container.innerHTML = container.innerHTML = `<span>You are INVINCIBLE!!<br><br>
+		${remainingTime}s</span>`;
 		intrvl1 = setInterval(() => {
 			if (remainingTime <= 1) {
 				if (intrvl1 != null) {
@@ -68,8 +68,8 @@ function powers() {
 				}
 			} else {
 				remainingTime--;
-				container.innerHTML = `You are INVINCIBLE!!
-				${remainingTime}s`;
+				container.innerHTML = `<span>You are INVINCIBLE!!<br><br>
+				${remainingTime}s</span>`;
 			}
 		}, 1000);
 	} else {
