@@ -21,7 +21,7 @@ let socket = io();
 let invincibility = false;
 let nIntervId = null;
 let intrvl1 = null;
-let remainingTime = 5;
+let remainingTime = 6;
 
 function getRgb(value, threshold) {
 
@@ -51,11 +51,11 @@ function getRgb(value, threshold) {
 // }); 
 
 function powers() {
-	let randNum = Math.floor((Math.random() * 3) + 1);
+	let randNum = Math.floor((Math.random() * 65) + 1);
 	console.log(randNum);
-	if ((randNum == 2) && (invincibility == false)) {
+	if ((randNum == 1) && (invincibility == false)) {
 		invincibility = true;
-		remainingTime = 5;
+		remainingTime = 6;
 		container.innerHTML = container.innerHTML = `<span>You are INVINCIBLE!!<br><br>
 		${remainingTime}s</span>`;
 		intrvl1 = setInterval(() => {
@@ -188,7 +188,7 @@ socket.on('game-start', () => {
 		if (nIntervId == null) {
 			nIntervId = setInterval(() => {
 				powers();
-			}, 5000);
+			}, 6000);
 		}
 
 		socket.emit('status-change', {
