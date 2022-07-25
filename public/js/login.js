@@ -51,7 +51,7 @@ function getRgb(value, threshold) {
 // }); 
 
 function powers() {
-	let randNum = Math.floor((Math.random() * 65) + 1);
+	let randNum = Math.floor((Math.random() * 25) + 1);
 	console.log(randNum);
 	if ((randNum == 1) && (invincibility == false)) {
 		invincibility = true;
