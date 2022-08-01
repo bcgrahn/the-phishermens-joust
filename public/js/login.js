@@ -22,7 +22,7 @@ let invincibility = false;
 let nIntervId = null;
 let nIntervPowId = null;
 let intrvl1 = null;
-let remainingTime = 10;
+let remainingTime = 8;
 let randNum = 0;
 
 function getRgb(value, threshold) {
@@ -57,7 +57,7 @@ function powers() {
 	console.log(randNum);
 	if ((randNum == 1) && (invincibility == false)) {
 		invincibility = true;
-		remainingTime = 10;
+		remainingTime = 8;
 		container.innerHTML = container.innerHTML = `<span>You are INVINCIBLE!!<br><br>
 		${remainingTime}s</span>`;
 		intrvl1 = setInterval(() => {
