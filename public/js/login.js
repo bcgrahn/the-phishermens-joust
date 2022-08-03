@@ -66,7 +66,7 @@ function powers() {
 					clearInterval(intrvl1);
 					intrvl1 = null;
 					invincibility = false;
-					container.innerHTML = `<span>${numPlayersLeft} players remaining...<br><br>${randNum}</span>`;
+					container.innerHTML = `<span>${numPlayersLeft} players remaining...`;//<br><br>${randNum}</span>`;
 				}
 			} else {
 				remainingTime--;
@@ -76,7 +76,7 @@ function powers() {
 		}, 1000);
 	} else {
 		invincibility = false;
-		container.innerHTML = `<span>${numPlayersLeft} players remaining...<br><br>${randNum}</span>`;
+		container.innerHTML = `<span>${numPlayersLeft} players remaining...`;//<br><br>${randNum}</span>`;
 	}
 	//socket.emit('invincibility-response', randNum);
 }
@@ -147,7 +147,7 @@ socket.on('remaining-count', (remainingCount) => {
 		playerStatus = '';
 	} else if (playerStatus == 'playing') {
 		if (remainingCount > 1) {
-			container.innerHTML = `<span>${remainingCount} players remaining...<br><br>${randNum}</span>`;
+			container.innerHTML = `<span>${remainingCount} players remaining...`;//<br><br>${randNum}</span>`;
 		}
 	}
 });
