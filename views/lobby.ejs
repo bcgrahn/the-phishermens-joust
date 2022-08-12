@@ -21,7 +21,7 @@
                                 <img src="images/qr-code.png" alt="qrcode" id="qrcode_img">
                             </div>
                             <span id="url">
-                                https://the-phishermens-joust.herokuapp.com/
+                                https://phishermens-joust.herokuapp.com/
                             </span>
                         </div>
                         <section id="start_restart_controls">
@@ -40,16 +40,16 @@
                                 <div class="status">Status</div>
                             </li>
                             <% players.forEach(player=>{ %>
-                                <% console.log(player) %> 
-                                <li id=<%='player-' + player.id; %> class = 'player-li'>
-                                    <div class="player">
-                                        <%= player.username %>
-                                    </div>
-                                    <div class="status" style=<%= "color: "+player.rgb +";"%>>
-                                        <%= player.status %>
-                                    </div>
-                                </li>
-                                <% }) %>
+                                <% console.log(player) %>
+                                    <li id=<%='player-' + player.id; %> class = 'player-li'>
+                                        <div class="player">
+                                            <%= player.username %>
+                                        </div>
+                                        <div class="status" style=<%="color: " +player.rgb +";"%>>
+                                            <%= player.status %>
+                                        </div>
+                                    </li>
+                                    <% }) %>
                         </ul>
                     </div>
                 </section>
