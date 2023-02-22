@@ -7,6 +7,6 @@
 - Gabriel
 - Adam
 
-Heroku game link: https://phishermens-joust.herokuapp.com/ <br><br>
+Heroku game link: https://the-phishermens-joust.onrender.com/ <br><br>
 QR code:<br>
 <img src = "./public/images/qr-code.png" width=30% >
