@@ -73,7 +73,7 @@ if (process.env.PORT == null) {
 
 	ssl.listen(5000, () => {
 		console.log(`Server is active on port: ${5000}`);
-		console.log(`Link: https://${results['Wi-Fi']}/${5000}`);
+		console.log(`Link: https://${results['Wi-Fi']}:${5000}`);
 	});
 
 	io = socketio(ssl);
