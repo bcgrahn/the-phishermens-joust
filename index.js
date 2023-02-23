@@ -3,10 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const ejs = require('ejs');
-
+const { networkInterfaces } = require('os');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+
+const nets = networkInterfaces();
+const results = Object.create(null); // Or just '{}', an empty object
 
 const socketio = require('socket.io');
 let server, io;
@@ -21,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 
 app.get('/lobby', (req, res) => {
-	res.render('lobby', {players});
+	res.render('lobby', { players });
 });
 
 app.get('/', function (req, res) {
@@ -41,9 +44,23 @@ app.get('/spectate', function (req, res) {
 });
 
 //404 error page
-app.use('',(req, res)=>{
+app.use('', (req, res) => {
 	res.render('404')
 })
+
+for (const name of Object.keys(nets)) {
+	for (const net of nets[name]) {
+		// Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+		// 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+		const familyV4Value = typeof net.family === 'string' ? 'IPv4' : 4
+		if (net.family === familyV4Value && !net.internal) {
+			if (!results[name]) {
+				results[name] = [];
+			}
+			results[name].push(net.address);
+		}
+	}
+}
 
 if (process.env.PORT == null) {
 	const ssl = https.createServer(
@@ -56,6 +73,7 @@ if (process.env.PORT == null) {
 
 	ssl.listen(5000, () => {
 		console.log(`Server is active on port: ${5000}`);
+		console.log(`Link: https://${results['Wi-Fi']}/${5000}`);
 	});
 
 	io = socketio(ssl);
@@ -218,7 +236,7 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 
-	socket.on('music-start', data=>{
+	socket.on('music-start', data => {
 		io.sockets.emit('music-start', true);
 	})
 });
